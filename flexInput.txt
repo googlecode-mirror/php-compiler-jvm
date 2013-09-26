@@ -2,72 +2,147 @@
     #include <conio.h>
     #include <string.h>
     #include <locale.h>
+	#define PHP_DEBUG1
+	#define PRINT_KEYWORD_NAME1
+%}
+%{
+    char lexem[16384];
+    char heredocName[64];
+    int number;
+	void debugyy(char* txt, int num);
+	void printLex(char* lexemName, char* txt);
 %}
 %option noyywrap
 %option never-interactive
 %x STR
 %x STR_SINGLE_QUOTATION
+%x HEREDOC
 %x COMMENT
+%x HTML
+%x PHP
+
 %%
-%{
-    char lexem[16384];
-    char heredocName[1024];
-%}
 
-[1-9]([0-9])*|0 printf("%s\n",yytext);
-0[0-7]* { printf("%s\n",yytext); }
-0(x[0-9a-f]*|X[0-9A-F]*) { printf("%s\n",yytext); }
+"<"\?php BEGIN(PHP);
+<PHP>\?">" BEGIN(INITIAL);
 
-var printf("%s\n",yytext);
-if|else|elseif printf("%s\n", yytext);
-switch|case printf("%s\n", yytext);
-break printf("%s\n", yytext);
-default printf("%s\n", yytext);
+.* printLex("html", yytext);
 
-for|foreach printf("%s\n", yytext);
-as printf("%s\n", yytext);
-do|while printf("%s\n", yytext);
+<PHP>"<<<"[a-zA-Z_][a-zA-Z0-9_]*$ { strcpy(heredocName,yytext+3); strcpy(lexem,""); BEGIN(HEREDOC);}
+<HEREDOC>^[a-zA-Z_][a-zA-Z0-9_]*;?$	{ debugyy(yytext,0); if(!strcmp(heredocName,yytext) || !strcmp(strcat(heredocName, ";"), yytext)){printLex("heredoc", lexem); BEGIN(PHP);}else{printf("TEST1");} }
+<HEREDOC>[^\\\n\"\$\r\t]+ {strcat(lexem,yytext); debugyy(yytext,1);}
+<HEREDOC>\$ {strcat(lexem,yytext); debugyy(yytext, 2);}
+<HEREDOC>\n {strcat(lexem,yytext); debugyy(yytext, 3);}
+<HEREDOC>\\n {strcat(lexem,yytext); debugyy(yytext, 4);}
+<HEREDOC>\\t {strcat(lexem,yytext); debugyy(yytext, 5);}
+<HEREDOC>\\r {strcat(lexem,yytext); debugyy(yytext, 6);}
+<HEREDOC>\\\\ {strcat(lexem,yytext); debugyy(yytext, 7);}
+<HEREDOC>\" {strcat(lexem,yytext); debugyy(yytext, 8);}
+<HEREDOC>^\$[a-zA-Z_][a-zA-Z0-9_]* {strcat(lexem, yytext);}
 
-class|this|extends|public|private|protected|static printf("%s\n", yytext);
 
-function|return printf("%s\n", yytext);
+<PHP>[1-9]([0-9])*|0 printLex("number", yytext);
+<PHP>0[0-7]* { printLex("number", yytext); }
+<PHP>0(x[0-9a-f]*|X[0-9A-F]*) { printLex("number", yytext); }
 
-echo|print printf("%s\n",yytext);
+<PHP>var printLex("keyword", yytext);
+<PHP>if|else|elseif printLex("keyword", yytext);
+<PHP>switch|case printLex("keyword", yytext);
+<PHP>break printLex("keyword", yytext);
+<PHP>default printLex("keyword", yytext);
+<PHP>for|foreach { printLex("keyword", yytext); } 
+<PHP>as printLex("keyword", yytext);
+<PHP>do|while printLex("keyword", yytext);
+<PHP>class|this|extends|public|private|protected|static printLex("keyword", yytext);
+<PHP>function|return printLex("keyword", yytext);
+<PHP>echo|print printLex("keyword", yytext);
 
-"("|")"|"{"|"}"|"["|"]" printf("%s\n",yytext);
-=>|-> printf("%s\n",yytext);
-"." printf("%s\n",yytext);
-,|;|::|: printf("%s\n",yytext);
-"||"|&&|! printf("%s\n",yytext);
+<PHP>"("|")"|"{"|"}"|"["|"]" printLex("brackets", yytext);
+<PHP>=>|-> printLex("operator", yytext);
+<PHP>"." printLex("operator", yytext);
+<PHP>,|;|::|: printLex("operator", yytext);
+<PHP>"||"|&&|! printLex("operator", yytext);
 
-"+"|"+="|"-="|"*"|"*="|"/"|"/="|"%"|"%="|"++"|"--"|">"|">="|"<"|"<="|"="|"=="|"==="|"!="|"<>"|"!==" printf("%s\n",yytext);
+<PHP>"+"|"+="|"-"|"-="|"*"|"*="|"/"|"/="|"%"|"%="|"++"|"--"|">"|">="|"<"|"<="|"="|"=="|"==="|"!="|"<>"|"!==" printLex("operator", yytext);
 
-\" {BEGIN(STR);}
+<PHP>\" {BEGIN(STR);}
 <STR>\$[a-zA-Z_][a-zA-Z0-9_]* strcat(lexem,yytext);
 <STR>[^\\\n\"\$\r\t]+ strcat(lexem,yytext);
-<STR>\\$|\\n|\\t|\\r|\\\\|\\\" strcat(lexem,yytext);
-<STR>\" { printf("%s\n",lexem);BEGIN(INITIAL);} 
+<STR>\n strcat(lexem,"\\n");
+<STR>\t strcat(lexem,"\\t");
+<STR>\r strcat(lexem,"\\r");
+<STR>\\$|\\\\|\\\" strcat(lexem,yytext);
+<STR>\" { printLex("string", yytext);BEGIN(PHP);} 
 
-' {strcpy(lexem,"");BEGIN(STR_SINGLE_QUOTATION);}
-<STR_SINGLE_QUOTATION>[^\\']+ strcat(lexem,yytext);
-<STR_SINGLE_QUOTATION>\\\\ strcat(lexem,"\\");
-<STR_SINGLE_QUOTATION>\\' strcat(lexem,"'");
-<STR_SINGLE_QUOTATION>' { printf("%s\n",lexem);BEGIN(INITIAL);} 
+<PHP>\' {strcpy(lexem,"");BEGIN(STR_SINGLE_QUOTATION);}
+<STR_SINGLE_QUOTATION>\n strcat(lexem,"\\n");
+<STR_SINGLE_QUOTATION>\r strcat(lexem,"\\r");
+<STR_SINGLE_QUOTATION>\t strcat(lexem,"\\t");
+<STR_SINGLE_QUOTATION>\\' strcat(lexem,"\\'");
+<STR_SINGLE_QUOTATION>[^']+ strcat(lexem,yytext);
+<STR_SINGLE_QUOTATION>' { printLex("string", lexem);BEGIN(PHP);} 
 
-"<<<"[a-zA-Z_][a-zA-Z0-9_]*$ {strcpy(heredocName,yytext+3);strcpy(lexem,"");BEGIN(HEREDOC);}
-<HEREDOC>[^\\\n\"\$\r\t]+ strcat(lexem,yytext);
-<HEREDOC>\$|\n|\\n|\\t|\\r|\\\\|\" strcat(lexem,yytext);
-<HEREDOC>^\$[a-zA-Z_][a-zA-Z0-9_]* strcat(lexem,yytext);
-<HEREDOC>^[a-zA-Z_][a-zA-Z0-9_]*;$ { if(!strcmp(heredocName,yytext)){printf("%s\n",lexem); BEGIN(INITIAL);} }
 
-"/*" BEGIN(COMMENT);
-<COMMENT>[^*]*
-<COMMENT>"*"+[^*/]*
-<COMMENT>"*"+"/" {/*printf("%s\n",yytext);*/BEGIN(INITIAL);}
 
-"//".* /*printf("%s\n",yytext);*/;
-[[:SPACE:]]+ ;
-\$[a-zA-Z_][a-zA-Z0-9_]* printf("%s\n",yytext);
-[a-zA-Z_][a-zA-Z0-9_]* printf("%s\n",yytext);
-. printf("Danger danger! Found not allowed character(s)! [%s]\n",yytext);
+<PHP>"/*" {strcpy(lexem,""); BEGIN(COMMENT);}
+<COMMENT>[^*]* strcat(lexem,yytext);
+<COMMENT>"*"+[^*/]* strcat(lexem,yytext);
+<COMMENT>"*"+"/" { printLex("comment1", lexem); BEGIN(PHP);}
+
+<PHP>"//".* printLex("comment", yytext);
+<PHP>[[:SPACE:]]+ ;
+<PHP>\$[a-zA-Z_][a-zA-Z0-9_]* printLex("variable", yytext);;
+<PHP>[a-zA-Z_][a-zA-Z0-9_]* printLex("identificator", yytext);
+<PHP>. printLex("character_not_found",yytext);
 %%
+void debugyy(char* txt, int num)
+{
+#ifdef PHP_DEBUG
+	printf("DEBUG %d:[%s]\n",num,txt);
+#endif
+}
+
+void printLex(char* lexemName, char* txt)
+{	
+	if(!strcmp(lexemName,"heredoc"))
+	{
+		//printf("heredoc ends\n");
+	}
+	else if(!strcmp(lexemName,"html"))
+	{
+		printf("echo \"%s\";\n", txt);
+		return;
+	}
+	else if(!strcmp(lexemName,"comment1"))
+	{
+		printf("\\*%s*\\\n", txt);
+		return;
+	}
+	else if(!strcmp(lexemName,"character_not_found"))
+	{
+		printf("Danger danger! Found not allowed character(s)! [%s]\n", txt);
+	}
+#ifdef PRINT_KEYWORD_NAME
+	printf("%s %s\n",lexemName, txt);
+#endif
+#ifndef PRINT_KEYWORD_NAME
+	printf("%s\n", txt);	
+#endif
+
+
+
+
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
