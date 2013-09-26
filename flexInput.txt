@@ -1,0 +1,73 @@
+%{
+    #include <conio.h>
+    #include <string.h>
+    #include <locale.h>
+%}
+%option noyywrap
+%option never-interactive
+%x STR
+%x STR_SINGLE_QUOTATION
+%x COMMENT
+%%
+%{
+    char lexem[16384];
+    char heredocName[1024];
+%}
+
+[1-9]([0-9])*|0 printf("%s\n",yytext);
+0[0-7]* { printf("%s\n",yytext); }
+0(x[0-9a-f]*|X[0-9A-F]*) { printf("%s\n",yytext); }
+
+var printf("%s\n",yytext);
+if|else|elseif printf("%s\n", yytext);
+switch|case printf("%s\n", yytext);
+break printf("%s\n", yytext);
+default printf("%s\n", yytext);
+
+for|foreach printf("%s\n", yytext);
+as printf("%s\n", yytext);
+do|while printf("%s\n", yytext);
+
+class|this|extends|public|private|protected|static printf("%s\n", yytext);
+
+function|return printf("%s\n", yytext);
+
+echo|print printf("%s\n",yytext);
+
+"("|")"|"{"|"}"|"["|"]" printf("%s\n",yytext);
+=>|-> printf("%s\n",yytext);
+"." printf("%s\n",yytext);
+,|;|::|: printf("%s\n",yytext);
+"||"|&&|! printf("%s\n",yytext);
+
+"+"|"+="|"-="|"*"|"*="|"/"|"/="|"%"|"%="|"++"|"--"|">"|">="|"<"|"<="|"="|"=="|"==="|"!="|"<>"|"!==" printf("%s\n",yytext);
+
+\" {BEGIN(STR);}
+<STR>\$[a-zA-Z_][a-zA-Z0-9_]* strcat(lexem,yytext);
+<STR>[^\\\n\"\$\r\t]+ strcat(lexem,yytext);
+<STR>\\$|\\n|\\t|\\r|\\\\|\\\" strcat(lexem,yytext);
+<STR>\" { printf("%s\n",lexem);BEGIN(INITIAL);} 
+
+' {strcpy(lexem,"");BEGIN(STR_SINGLE_QUOTATION);}
+<STR_SINGLE_QUOTATION>[^\\']+ strcat(lexem,yytext);
+<STR_SINGLE_QUOTATION>\\\\ strcat(lexem,"\\");
+<STR_SINGLE_QUOTATION>\\' strcat(lexem,"'");
+<STR_SINGLE_QUOTATION>' { printf("%s\n",lexem);BEGIN(INITIAL);} 
+
+"<<<"[a-zA-Z_][a-zA-Z0-9_]*$ {strcpy(heredocName,yytext+3);strcpy(lexem,"");BEGIN(HEREDOC);}
+<HEREDOC>[^\\\n\"\$\r\t]+ strcat(lexem,yytext);
+<HEREDOC>\$|\n|\\n|\\t|\\r|\\\\|\" strcat(lexem,yytext);
+<HEREDOC>^\$[a-zA-Z_][a-zA-Z0-9_]* strcat(lexem,yytext);
+<HEREDOC>^[a-zA-Z_][a-zA-Z0-9_]*;$ { if(!strcmp(heredocName,yytext)){printf("%s\n",lexem); BEGIN(INITIAL);} }
+
+"/*" BEGIN(COMMENT);
+<COMMENT>[^*]*
+<COMMENT>"*"+[^*/]*
+<COMMENT>"*"+"/" {/*printf("%s\n",yytext);*/BEGIN(INITIAL);}
+
+"//".* /*printf("%s\n",yytext);*/;
+[[:SPACE:]]+ ;
+\$[a-zA-Z_][a-zA-Z0-9_]* printf("%s\n",yytext);
+[a-zA-Z_][a-zA-Z0-9_]* printf("%s\n",yytext);
+. printf("Danger danger! Found not allowed character(s)! [%s]\n",yytext);
+%%
