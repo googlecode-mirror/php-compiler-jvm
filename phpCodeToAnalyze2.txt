@@ -1,0 +1,32 @@
+<?php
+class foo
+{
+    var $foo;
+    var $bar;
+
+    function foo()
+    {
+        $this->foo = 'Foo';
+        $this->bar = array('Bar1', 'Bar2', 'Bar3');
+		$a = $a + +$a - $a - -$a + $a++ + ++$a - --$a - $a-- + $a--;
+		$a = 0XAF;
+		$a = 045;
+		$a = 45;
+    }
+}
+
+
+/* Более сложный пример с переменными. */
+/**/
+
+
+$foo = new foo();
+$name = 'МоеИмя';
+
+<<<EOT
+Меня зовут "$name". Я печатаю $foo->foo.
+Теперь я вывожу {$foo->bar[1]}.
+Это должно вывести заглавную букву 'A': \x41
+ EOT;
+EOT;
+?>

@@ -1,7 +1,11 @@
 <html><body>
 <div class='php'>PHP testing:<br/>
 <?php
-/*####  ####*/
+/*#### identifier ####*/
+$test_variable;
+$_testVarialbe2;
+$_3test_variable
+
 /*#### array testing ####*/
 $array = array(
     "foo" => "bar",
@@ -13,6 +17,10 @@ $array = array(
 );
 $array[] = 56;	//-97
 unset($array[-97]);
+
+/*#### function ####*/
+function _1test_function2($var1,$var2,    var3,			var4){;}
+
 /*#### numbers ####*/
 $a = -0xaf;	//-175
 $a = +0xaf;	//175
@@ -21,6 +29,7 @@ $a = 0777;	//511
 $a = -0777;	//-511
 $a = -1;	//-1
 $a = 0b11010101;	//213
+
 /*#### string testing ####*/
 echo <<<EOT
 Меня зовут "$name". Я печатаю $foo->foo.
@@ -34,6 +43,15 @@ echo 'Также вы можете вставлять в строки
 это нормально';
 echo 'Переменные $expand также $either не разворачиваются';
 
+/*#### operators ####*/
+$a += 2 + 2;
+$a /= 2 + -2;
+$a -= -2 * -2;
+$a == -$a;
+$a = -$a%$a%$a;
+$a = $a > $a || !$a < $a||!$a>=!$a&& === $a <= $a-- == $a !== ++$a  && --$a;
+
+
 ?>
 
-</div></body>
+</div></body><?php /*HTML test*/ ?>

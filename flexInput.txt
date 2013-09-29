@@ -1,148 +1,279 @@
 %{
+    #include <locale.h>
     #include <conio.h>
     #include <string.h>
-    #include <locale.h>
-	#define PHP_DEBUG1
-	#define PRINT_KEYWORD_NAME1
+	#define PHP_DEBUG
 %}
 %{
+    char docName[64];
     char lexem[16384];
-    char heredocName[64];
-    int number;
-	void debugyy(char* txt, int num);
+	char html[16384] = "";
+#ifdef PHP_DEBUG
+	char comment[16384] = "";
+#endif
+	void debugyy(char* msg, char* txt);
+	void debug_clear(char* com);
+	void debug_strcat(char* com, char* txt);
 	void printLex(char* lexemName, char* txt);
+	void getDocName();
+	void docNameCheck(char* name, char* txt);
+	void printNumber(char* num, char* base);
+	void printBin(char* num);
+	void strcat_code(char* lex, int code);
+	void strcat_strcode(char* lex, char* code);
 %}
 %option noyywrap
 %option never-interactive
+
+DIGIT [0-9]
+DEC_NUM [1-9]{DIGIT}*|0
+INDEX \[({DEC_NUM})]
+OCT_DIGIT [0-7]
+HEX_DIGIT [0-9a-fA-F]
+FIRST_SYMBOL [a-zA-Z_\x7f-\xff]
+SYMBOL [a-zA-Z0-9_\x7f-\xff]
+ID {FIRST_SYMBOL}{SYMBOL}*
+IDD {ID}({INDEX})*
+VARNAME \${IDD}(->{IDD})*
+COMPLEX_VARNAME \$?{VARNAME}|\{{VARNAME}\}
+
+%x PHP
 %x STR
 %x STR_SINGLE_QUOTATION
 %x HEREDOC
+%x NOWDOC
 %x COMMENT
-%x HTML
-%x PHP
 
 %%
 
-"<"\?php BEGIN(PHP);
-<PHP>\?">" BEGIN(INITIAL);
+"<?"php {if (strlen(html) != 0) {printLex("HTML", html); strcpy(html, "");} printLex("BEGIN OF PHP", yytext); BEGIN(PHP);}
+<PHP>"?>" {printLex("END OF PHP", yytext); BEGIN(INITIAL);}
 
-.* printLex("html", yytext);
+. strcat(html, yytext);
+\n strcat(html, yytext);
+<INITIAL><<EOF>> {if (strlen(html) != 0) {printLex("HTML", html); strcpy(html, "");}}
 
-<PHP>"<<<"[a-zA-Z_][a-zA-Z0-9_]*$ { strcpy(heredocName,yytext+3); strcpy(lexem,""); BEGIN(HEREDOC);}
-<HEREDOC>^[a-zA-Z_][a-zA-Z0-9_]*;?$	{ debugyy(yytext,0); if(!strcmp(heredocName,yytext) || !strcmp(strcat(heredocName, ";"), yytext)){printLex("heredoc", lexem); BEGIN(PHP);}else{printf("TEST1");} }
-<HEREDOC>[^\\\n\"\$\r\t]+ {strcat(lexem,yytext); debugyy(yytext,1);}
-<HEREDOC>\$ {strcat(lexem,yytext); debugyy(yytext, 2);}
-<HEREDOC>\n {strcat(lexem,yytext); debugyy(yytext, 3);}
-<HEREDOC>\\n {strcat(lexem,yytext); debugyy(yytext, 4);}
-<HEREDOC>\\t {strcat(lexem,yytext); debugyy(yytext, 5);}
-<HEREDOC>\\r {strcat(lexem,yytext); debugyy(yytext, 6);}
-<HEREDOC>\\\\ {strcat(lexem,yytext); debugyy(yytext, 7);}
-<HEREDOC>\" {strcat(lexem,yytext); debugyy(yytext, 8);}
-<HEREDOC>^\$[a-zA-Z_][a-zA-Z0-9_]* {strcat(lexem, yytext);}
+<PHP>"<<<"{ID}|(\"{ID}\")$ {getDocName(); strcpy(lexem, ""); printLex("HEREDOC BEGIN", yytext); BEGIN(HEREDOC);}
+<PHP>"<<<"'{ID}'$ {getDocName(); strcpy(lexem, ""); printLex("NOWDOC BEGIN", yytext); BEGIN(NOWDOC);}
+<PHP>\" {strcpy(lexem, ""); printLex("STRING BEGIN", yytext); BEGIN(STR);}
+<PHP>' {strcpy(lexem, ""); printLex("STRING IN SINGLE QUOTES BEGIN", yytext); BEGIN(STR_SINGLE_QUOTATION);}
+<HEREDOC,NOWDOC>^{ID};?$ {debugyy("may be end of doc", yytext); docNameCheck(docName, yytext);}
+<STR>\" {if (strlen(lexem) != 0) {printf("%s\n", lexem);} printLex("STRING END", yytext); BEGIN(PHP);} 
+<STR_SINGLE_QUOTATION>' {if (strlen(lexem) != 0) {printf("%s\n", lexem);} printLex("STRING IN SINGLE QUOTES END", yytext); BEGIN(PHP);} 
+<HEREDOC,STR,NOWDOC,STR_SINGLE_QUOTATION>. strcat(lexem, yytext);
+<HEREDOC,STR,NOWDOC,STR_SINGLE_QUOTATION>\n strcat(lexem, yytext);
+<HEREDOC,STR,STR_SINGLE_QUOTATION>\\\\ strcat(lexem, "\\");
+<STR_SINGLE_QUOTATION>\\' strcat(lexem, "'");
+<STR>\\\" strcat(lexem, "\"");
+<HEREDOC,STR>\\n strcat(lexem, "\n");
+<HEREDOC,STR>\\r strcat(lexem, "\r");
+<HEREDOC,STR>\\t strcat(lexem, "\t");
+<HEREDOC,STR>\\v strcat(lexem, "\v");
+<HEREDOC,STR>\\f strcat(lexem, "\f");
+<HEREDOC,STR>\\\$ strcat(lexem, "$");
+<HEREDOC,STR>\\e strcat_code(lexem, 27);
+<HEREDOC,STR>\\{OCT_DIGIT}{1,3} strcat_strcode(lexem, yytext);
+<HEREDOC,STR>\\x{HEX_DIGIT}{1,2} strcat_strcode(lexem, yytext);
+<HEREDOC,STR>{COMPLEX_VARNAME} {printf("%s\n", lexem); strcpy(lexem, ""); printLex("VARIABLE IN TEXT", yytext);}
 
+<PHP>"//".* debugyy("COMMENT STRING", yytext);
 
-<PHP>[1-9]([0-9])*|0 printLex("number", yytext);
-<PHP>0[0-7]* { printLex("number", yytext); }
-<PHP>0(x[0-9a-f]*|X[0-9A-F]*) { printLex("number", yytext); }
+<PHP>"/*" {debugyy("COMMENT BEGIN", yytext); debug_clear(comment); BEGIN(COMMENT);}
+<COMMENT>. debug_strcat(comment, yytext);
+<COMMENT>\n debug_strcat(comment, yytext);
+<COMMENT>"*/" {debugyy(0, comment); debugyy("COMMENT END", yytext); BEGIN(PHP);}
 
-<PHP>var printLex("keyword", yytext);
-<PHP>if|else|elseif printLex("keyword", yytext);
-<PHP>switch|case printLex("keyword", yytext);
-<PHP>break printLex("keyword", yytext);
-<PHP>default printLex("keyword", yytext);
-<PHP>for|foreach { printLex("keyword", yytext); } 
-<PHP>as printLex("keyword", yytext);
-<PHP>do|while printLex("keyword", yytext);
-<PHP>class|this|extends|public|private|protected|static printLex("keyword", yytext);
-<PHP>function|return printLex("keyword", yytext);
-<PHP>echo|print printLex("keyword", yytext);
+<PHP>{DEC_NUM} printLex("DECIMAL NUMBER", yytext);
+<PHP>0{OCT_DIGIT}+ printNumber(yytext, "%o");
+<PHP>0[xX]{HEX_DIGIT}+ printNumber(yytext, "%x");
+<PHP>0b[01]+ printBin(yytext);
 
-<PHP>"("|")"|"{"|"}"|"["|"]" printLex("brackets", yytext);
-<PHP>=>|-> printLex("operator", yytext);
-<PHP>"." printLex("operator", yytext);
-<PHP>,|;|::|: printLex("operator", yytext);
-<PHP>"||"|&&|! printLex("operator", yytext);
+<PHP>var printLex("KEYWORD", yytext);
+<PHP>array printLex("KEYWORD", yytext);
 
-<PHP>"+"|"+="|"-"|"-="|"*"|"*="|"/"|"/="|"%"|"%="|"++"|"--"|">"|">="|"<"|"<="|"="|"=="|"==="|"!="|"<>"|"!==" printLex("operator", yytext);
+<PHP>if printLex("KEYWORD", yytext);
+<PHP>else printLex("KEYWORD", yytext);
+<PHP>elseif printLex("KEYWORD", yytext);
+<PHP>switch printLex("KEYWORD", yytext);
+<PHP>case printLex("KEYWORD", yytext);
+<PHP>break printLex("KEYWORD", yytext);
+<PHP>default printLex("KEYWORD", yytext);
 
-<PHP>\" {BEGIN(STR);}
-<STR>\$[a-zA-Z_][a-zA-Z0-9_]* strcat(lexem,yytext);
-<STR>[^\\\n\"\$\r\t]+ strcat(lexem,yytext);
-<STR>\n strcat(lexem,"\\n");
-<STR>\t strcat(lexem,"\\t");
-<STR>\r strcat(lexem,"\\r");
-<STR>\\$|\\\\|\\\" strcat(lexem,yytext);
-<STR>\" { printLex("string", yytext);BEGIN(PHP);} 
+<PHP>for printLex("KEYWORD", yytext);
+<PHP>foreach printLex("KEYWORD", yytext);
+<PHP>as printLex("KEYWORD", yytext);
+<PHP>do printLex("KEYWORD", yytext);
+<PHP>while printLex("KEYWORD", yytext);
 
-<PHP>\' {strcpy(lexem,"");BEGIN(STR_SINGLE_QUOTATION);}
-<STR_SINGLE_QUOTATION>\n strcat(lexem,"\\n");
-<STR_SINGLE_QUOTATION>\r strcat(lexem,"\\r");
-<STR_SINGLE_QUOTATION>\t strcat(lexem,"\\t");
-<STR_SINGLE_QUOTATION>\\' strcat(lexem,"\\'");
-<STR_SINGLE_QUOTATION>[^']+ strcat(lexem,yytext);
-<STR_SINGLE_QUOTATION>' { printLex("string", lexem);BEGIN(PHP);} 
+<PHP>new printLex("KEYWORD", yytext);
+<PHP>class printLex("KEYWORD", yytext);
+<PHP>this printLex("KEYWORD", yytext);
+<PHP>extends printLex("KEYWORD", yytext);
+<PHP>public printLex("KEYWORD", yytext);
+<PHP>private printLex("KEYWORD", yytext);
+<PHP>protected printLex("KEYWORD", yytext);
+<PHP>static printLex("KEYWORD", yytext);
 
+<PHP>function printLex("KEYWORD", yytext);
+<PHP>return printLex("KEYWORD", yytext);
 
+<PHP>echo printLex("KEYWORD", yytext);
+<PHP>print printLex("KEYWORD", yytext);
 
-<PHP>"/*" {strcpy(lexem,""); BEGIN(COMMENT);}
-<COMMENT>[^*]* strcat(lexem,yytext);
-<COMMENT>"*"+[^*/]* strcat(lexem,yytext);
-<COMMENT>"*"+"/" { printLex("comment1", lexem); BEGIN(PHP);}
+<PHP>{COMPLEX_VARNAME} printLex("VARIABLE", yytext);
+<PHP>{ID} printLex("ID", yytext);
 
-<PHP>"//".* printLex("comment", yytext);
+<PHP>\( printLex("BRACKET", yytext);
+<PHP>\) printLex("BRACKET", yytext);
+<PHP>\[ printLex("BRACKET", yytext);
+<PHP>\] printLex("BRACKET", yytext);
+<PHP>\{ printLex("BRACKET", yytext);
+<PHP>\} printLex("BRACKET", yytext);
+
+<PHP>=> printLex("OPERATOR", yytext);
+<PHP>-> printLex("OPERATOR", yytext);
+<PHP>\. printLex("OPERATOR", yytext);
+<PHP>: printLex("OPERATOR", yytext);
+<PHP>:: printLex("OPERATOR", yytext);
+
+<PHP>, printLex("OPERATOR", yytext);
+<PHP>; printLex("OPERATOR", yytext);
+
+<PHP>! printLex("OPERATOR", yytext);
+<PHP>"||" printLex("OPERATOR", yytext);
+<PHP>"&&" printLex("OPERATOR", yytext);
+<PHP>or printLex("OPERATOR", yytext);
+<PHP>and printLex("OPERATOR", yytext);
+
+<PHP>"+" printLex("OPERATOR", yytext);
+<PHP>"+=" printLex("OPERATOR", yytext);
+<PHP>"-" printLex("OPERATOR", yytext);
+<PHP>"-=" printLex("OPERATOR", yytext);
+<PHP>"*" printLex("OPERATOR", yytext);
+<PHP>"*=" printLex("OPERATOR", yytext);
+<PHP>"/" printLex("OPERATOR", yytext);
+<PHP>"/=" printLex("OPERATOR", yytext);
+<PHP>"%" printLex("OPERATOR", yytext);
+<PHP>"%=" printLex("OPERATOR", yytext);
+<PHP>"++" printLex("OPERATOR", yytext);
+<PHP>"--" printLex("OPERATOR", yytext);
+
+<PHP>"==" printLex("OPERATOR", yytext);
+<PHP>"!=" printLex("OPERATOR", yytext);
+<PHP>"<>" printLex("OPERATOR", yytext);
+<PHP>">" printLex("OPERATOR", yytext);
+<PHP>">=" printLex("OPERATOR", yytext);
+<PHP>"<" printLex("OPERATOR", yytext);
+<PHP>"<=" printLex("OPERATOR", yytext);
+<PHP>"===" printLex("OPERATOR", yytext);
+<PHP>"!==" printLex("OPERATOR", yytext);
+
+<PHP>"=" printLex("OPERATOR", yytext);
+
 <PHP>[[:SPACE:]]+ ;
-<PHP>\$[a-zA-Z_][a-zA-Z0-9_]* printLex("variable", yytext);;
-<PHP>[a-zA-Z_][a-zA-Z0-9_]* printLex("identificator", yytext);
-<PHP>. printLex("character_not_found",yytext);
+<PHP>. printf("character_not_found");
+
 %%
-void debugyy(char* txt, int num)
+
+void debugyy(char* msg, char* txt)
 {
 #ifdef PHP_DEBUG
-	printf("DEBUG %d:[%s]\n",num,txt);
+	if (msg != 0)
+		printf("DEBUG: %s: [%s]\n", msg, txt);
+	else
+		printf("%s\n", txt);
+#endif
+}
+
+void debug_clear(char* com)
+{
+#ifdef PHP_DEBUG
+	strcpy(com, "");
+#endif
+}
+
+void debug_strcat(char* com, char* txt)
+{
+#ifdef PHP_DEBUG
+	strcat(com, txt);
 #endif
 }
 
 void printLex(char* lexemName, char* txt)
-{	
-	if(!strcmp(lexemName,"heredoc"))
-	{
-		//printf("heredoc ends\n");
-	}
-	else if(!strcmp(lexemName,"html"))
-	{
-		printf("echo \"%s\";\n", txt);
-		return;
-	}
-	else if(!strcmp(lexemName,"comment1"))
-	{
-		printf("\\*%s*\\\n", txt);
-		return;
-	}
-	else if(!strcmp(lexemName,"character_not_found"))
-	{
-		printf("Danger danger! Found not allowed character(s)! [%s]\n", txt);
-	}
-#ifdef PRINT_KEYWORD_NAME
-	printf("%s %s\n",lexemName, txt);
-#endif
-#ifndef PRINT_KEYWORD_NAME
-	printf("%s\n", txt);	
-#endif
-
-
-
-
-	
+{
+	printf("%s found: [%s]\n", lexemName, txt);
 }
 
+void getDocName()
+{
+	if ((yytext[3] == '\"') || (yytext[3] == '\''))
+	{
+		strcpy(docName, yytext+4);
+		docName[strlen(docName)-1] = 0;
+	}
+	else
+		strcpy(docName, yytext+3);
+}
 
+void docNameCheck(char* name, char* txt)
+{
+	char dName[65];
+	strcpy(dName, name);
+	if(!strcmp(dName, txt) || !strcmp(strcat(dName, ";"), txt))
+	{
+		if (strlen(lexem) != 0)
+			printf("%s\n", lexem);
+		printLex("DOC END", txt);
+		BEGIN(PHP);
+	}
+	else
+	{
+		strcat(lexem, yytext);
+		debugyy("not end of doc - other id", yytext);
+	}
+}
 
+void printNumber(char* num, char* base)
+{
+	int number;
+	char format[45];
+	if (base[1] == 'o')
+		strcpy(format, "OCTAL");
+	else
+		strcpy(format, "HEXADECIMAL");
+	strcat(format, " NUMBER found: [%s] (decimal %d)\n");
+	sscanf(num, base, &number);
+	printf(format, num, number);
+}
 
+void printBin(char* num)
+{
+	int number = 0;
+	int digit = 1;
+	int i;
+	for (i = strlen(num)-1; i > 1; i--)
+	{
+		number += (num[i]-48)*digit;
+		digit *= 2;
+	}
+	printf("BINARY NUMBER found: [%s] (decimal %d)\n", num, number);
+}
 
+void strcat_code(char* lex, int code)
+{
+	char h[2] = {(code%256), 0};
+	strcat(lex, h);
+}
 
-
-
-
-
-
-
+void strcat_strcode(char* lex, char* code)
+{
+	int num;
+	char copy[5];
+	strcpy(copy, code);
+	copy[0] = '0';
+	if (copy[1] == 'x')
+		sscanf(copy, "%x", &num);
+	else
+		sscanf(copy, "%o", &num);
+	strcat_code(lex, num);
+}
