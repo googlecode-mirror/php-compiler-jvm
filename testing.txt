@@ -4,7 +4,7 @@
 /*#### identifier ####*/
 $test_variable;
 $_testVarialbe2;
-$_3test_variable
+$_3test_variable;
 
 /*#### array testing ####*/
 $array = array(
@@ -13,7 +13,7 @@ $array = array(
 	100   => -100,
     -100  => 100,
 			"a",
-			"f",
+			"f"
 );
 $array[] = 56;	//-97
 unset($array[-97]);
@@ -34,7 +34,7 @@ $a = 0b11010101;	//213
 echo <<<EOT
 Меня зовут "$name". Я печатаю $foo->foo.
 Теперь я вывожу {$foo->bar[1]}.
-Это должно вывести заглавную букву 'A': \x41
+Это должно вывести заглавную букву 'A': 0x41
  EOT;
 EOT;
 echo 'это простая строка';
@@ -55,3 +55,4 @@ $a = $a > $a || !$a < $a||!$a>=!$a&& === $a <= $a-- == $a !== ++$a  && --$a;
 ?>
 
 </div></body><?php /*HTML test*/ ?>
+

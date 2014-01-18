@@ -1,0 +1,8 @@
+syntax: glob
+phpLexAnalyzer/phpLexAnalyzer/Release/
+phpLexAnalyzer/phpLexAnalyzer/Debug/
+*.user
+*.pdb
+*.suo
+*.ncb
+*.ilk

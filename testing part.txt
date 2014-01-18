@@ -1,0 +1,21 @@
+<html><body>
+<div class='php'>PHP testing:<br/>
+<?php
+/*#### identifier ####*/
+$test_variable;
+$_testVarialbe2;
+$_3test_variable;
+
+/*#### array testing ####*/
+$array = array(
+    "foo" => "bar",
+    "bar" => "foo",
+	100   => -100,
+    -100  => 100,
+			"a",
+			"f"
+);
+?>
+
+</div></body><?php /*HTML test*/ ?>
+

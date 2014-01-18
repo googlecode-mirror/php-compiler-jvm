@@ -1,39 +1,25 @@
-<html><body>
-<div class='php'>PHP testing:<br/>
+<html><head><head>
+<body>
+
 <?php
-/*####  ####*/
-/*#### array testing ####*/
-$array = array(
-    "foo" => "bar",
-    "bar" => "foo",
-	100   => -100,
-    -100  => 100,
-			"a",
-			"f",
-);
-$array[] = 56;	//-97
-unset($array[-97]);
-/*#### numbers ####*/
-$a = -0xaf;	//-175
-$a = +0xaf;	//175
-$a = 400;	//400
-$a = 0777;	//511
-$a = -0777;	//-511
-$a = -1;	//-1
-$a = 0b11010101;	//213
-/*#### string testing ####*/
+/*string testing*/
+
 echo <<<EOT
 Меня зовут "$name". Я печатаю $foo->foo.
 Теперь я вывожу {$foo->bar[1]}.
-Это должно вывести заглавную букву 'A': \x41
- EOT;
+Это должно вывести заглавную букву 'A': 0x41
 EOT;
+
 echo 'это простая строка';
+
 echo 'Также вы можете вставлять в строки
 символ новой строки вот так,
 это нормально';
+
+// Выводит: Переменные $expand также $either не разворачиваются
 echo 'Переменные $expand также $either не разворачиваются';
 
 ?>
-
-</div></body>
+<div class='test_class'>testing</div>
+</body>
+<html>
