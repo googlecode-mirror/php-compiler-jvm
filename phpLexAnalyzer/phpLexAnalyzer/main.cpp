@@ -10,8 +10,8 @@
 extern "C" FILE* yyin;
 extern "C" int yyparse(void);
 
-int main(int argc,char* argv[]) {
-		
+int main(int argc,char* argv[])
+{
 	setlocale(LC_ALL,"rus");
 
 	printf("%s\n", argv[1]);

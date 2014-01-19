@@ -2,23 +2,18 @@
     #include <conio.h>
     #include <string.h>
 	#include "bison_input.yacc_tab.h"
-	#define PHP_DEBUG
+	
+	extern union YYSTYPE yylval;
 
 	int start_condition[64];
 	int condition_num = 0;
     char docName[64];
     char lexem[256];
 	char html[512] = "";
-#ifdef PHP_DEBUG
-	char comment[512] = "";
-#endif
 	void beginCondition();
 	void changeStartCondition(int condition);
 	void addStartCondition(int condition);
 	void returnStartCondition();
-	void debugyy(char* msg, char* txt);
-	void debug_clear(char* com);
-	void debug_strcat(char* com, char* txt);
 	void writeIntToUnion(char* num, char* base);
 	void writeBinToUnion(char* num);
 	void writeCharToUnion(char* const_char);
@@ -31,8 +26,6 @@
 	int strToBin(char* num);
 	void strcat_code(char* lex, int code);
 	void strcat_strcode(char* lex, char* code);
-	
-	extern union YYSTYPE yylval;
 %}
 %option noyywrap
 %option never-interactive
@@ -215,30 +208,6 @@ void returnStartCondition()
 {
 	condition_num--;
 	BEGIN(start_condition[condition_num]);
-}
-
-void debugyy(char* msg, char* txt)
-{
-#ifdef PHP_DEBUG
-	if (msg != 0)
-		printf("DEBUG: %s: [%s]\n", msg, txt);
-	else
-		printf("%s\n", txt);
-#endif
-}
-
-void debug_clear(char* com)
-{
-#ifdef PHP_DEBUG
-	strcpy(com, "");
-#endif
-}
-
-void debug_strcat(char* com, char* txt)
-{
-#ifdef PHP_DEBUG
-	strcat(com, txt);
-#endif
 }
 
 void writeIntToUnion(char* num, char* base)
