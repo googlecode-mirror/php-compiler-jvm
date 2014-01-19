@@ -629,23 +629,18 @@ char *yytext_ptr;
     #include <conio.h>
     #include <string.h>
 	#include "bison_input.yacc_tab.h"
-	#define PHP_DEBUG
+	
+	extern union YYSTYPE yylval;
 
 	int start_condition[64];
 	int condition_num = 0;
     char docName[64];
     char lexem[256];
 	char html[512] = "";
-#ifdef PHP_DEBUG
-	char comment[512] = "";
-#endif
 	void beginCondition();
 	void changeStartCondition(int condition);
 	void addStartCondition(int condition);
 	void returnStartCondition();
-	void debugyy(char* msg, char* txt);
-	void debug_clear(char* com);
-	void debug_strcat(char* com, char* txt);
 	void writeIntToUnion(char* num, char* base);
 	void writeBinToUnion(char* num);
 	void writeCharToUnion(char* const_char);
@@ -658,8 +653,6 @@ char *yytext_ptr;
 	int strToBin(char* num);
 	void strcat_code(char* lex, int code);
 	void strcat_strcode(char* lex, char* code);
-	
-	extern union YYSTYPE yylval;
 #define YY_NEVER_INTERACTIVE 1
 #define PHP 1
 
@@ -675,7 +668,7 @@ char *yytext_ptr;
 
 #define VAR_IN_STR 7
 
-#line 679 "lex.yy.c"
+#line 672 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -825,10 +818,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 58 "flexInput.txt"
+#line 51 "flexInput.txt"
 
 
-#line 832 "lex.yy.c"
+#line 825 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -951,559 +944,559 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 60 "flexInput.txt"
+#line 53 "flexInput.txt"
 {if (strlen(html) != 0) {writeHtmlToUnion(html);} beginCondition(); addStartCondition(PHP); return HTML;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 61 "flexInput.txt"
+#line 54 "flexInput.txt"
 {returnStartCondition();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 63 "flexInput.txt"
+#line 56 "flexInput.txt"
 strcat(html, yytext);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 64 "flexInput.txt"
+#line 57 "flexInput.txt"
 strcat(html, yytext);
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 65 "flexInput.txt"
+#line 58 "flexInput.txt"
 {if (strlen(html) != 0) {writeHtmlToUnion(html);} return HTML;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 67 "flexInput.txt"
+#line 60 "flexInput.txt"
 {getDocName(); strcpy(lexem, ""); addStartCondition(HEREDOC);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 68 "flexInput.txt"
+#line 61 "flexInput.txt"
 {getDocName(); strcpy(lexem, ""); addStartCondition(NOWDOC);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 69 "flexInput.txt"
+#line 62 "flexInput.txt"
 {strcpy(lexem, ""); addStartCondition(STR);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 70 "flexInput.txt"
+#line 63 "flexInput.txt"
 {strcpy(lexem, ""); addStartCondition(STR_CONST);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 72 "flexInput.txt"
+#line 65 "flexInput.txt"
 {if (docNameCheck(docName, yytext)) {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;} else strcat(lexem, yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 73 "flexInput.txt"
+#line 66 "flexInput.txt"
 {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 74 "flexInput.txt"
+#line 67 "flexInput.txt"
 {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 76 "flexInput.txt"
+#line 69 "flexInput.txt"
 {writeCharToUnion(lexem); strcpy(lexem, yytext+1); unput('1'); addStartCondition(VAR_IN_STR); return CHAR_CONST;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 77 "flexInput.txt"
+#line 70 "flexInput.txt"
 {writeIdToUnion(lexem); returnStartCondition(); return VARNAME_IN_STR;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 79 "flexInput.txt"
+#line 72 "flexInput.txt"
 strcat(lexem, yytext);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 80 "flexInput.txt"
+#line 73 "flexInput.txt"
 strcat(lexem, yytext);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 81 "flexInput.txt"
+#line 74 "flexInput.txt"
 strcat(lexem, "\\");
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 82 "flexInput.txt"
+#line 75 "flexInput.txt"
 strcat(lexem, "'");
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 83 "flexInput.txt"
+#line 76 "flexInput.txt"
 strcat(lexem, "\"");
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 84 "flexInput.txt"
+#line 77 "flexInput.txt"
 strcat(lexem, "\n");
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 85 "flexInput.txt"
+#line 78 "flexInput.txt"
 strcat(lexem, "\r");
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 86 "flexInput.txt"
+#line 79 "flexInput.txt"
 strcat(lexem, "\t");
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 87 "flexInput.txt"
+#line 80 "flexInput.txt"
 strcat(lexem, "\v");
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 88 "flexInput.txt"
+#line 81 "flexInput.txt"
 strcat(lexem, "\f");
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 89 "flexInput.txt"
+#line 82 "flexInput.txt"
 strcat(lexem, "$");
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 90 "flexInput.txt"
+#line 83 "flexInput.txt"
 strcat_code(lexem, 27);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 91 "flexInput.txt"
+#line 84 "flexInput.txt"
 strcat_strcode(lexem, yytext);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 92 "flexInput.txt"
+#line 85 "flexInput.txt"
 strcat_strcode(lexem, yytext);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 94 "flexInput.txt"
+#line 87 "flexInput.txt"
 
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 96 "flexInput.txt"
+#line 89 "flexInput.txt"
 {BEGIN(COMMENT);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 97 "flexInput.txt"
+#line 90 "flexInput.txt"
 {BEGIN(PHP);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 98 "flexInput.txt"
+#line 91 "flexInput.txt"
 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 99 "flexInput.txt"
+#line 92 "flexInput.txt"
 
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 101 "flexInput.txt"
+#line 94 "flexInput.txt"
 {writeIntToUnion(yytext, "%d"); return INT_CONST;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 102 "flexInput.txt"
+#line 95 "flexInput.txt"
 {writeIntToUnion(yytext, "%o"); return INT_CONST;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 103 "flexInput.txt"
+#line 96 "flexInput.txt"
 {writeIntToUnion(yytext, "%x"); return INT_CONST;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 104 "flexInput.txt"
+#line 97 "flexInput.txt"
 {writeBinToUnion(yytext); return INT_CONST;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 106 "flexInput.txt"
+#line 99 "flexInput.txt"
 {yylval.intConstUnionType = 1; return BOOL_CONST;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 107 "flexInput.txt"
+#line 100 "flexInput.txt"
 {yylval.intConstUnionType = 0; return BOOL_CONST;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 109 "flexInput.txt"
+#line 102 "flexInput.txt"
 {return ARRAY;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 111 "flexInput.txt"
+#line 104 "flexInput.txt"
 {return IF;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 112 "flexInput.txt"
+#line 105 "flexInput.txt"
 {return ELSE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 113 "flexInput.txt"
+#line 106 "flexInput.txt"
 {return ELSEIF;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 114 "flexInput.txt"
+#line 107 "flexInput.txt"
 {return SWITCH;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 115 "flexInput.txt"
+#line 108 "flexInput.txt"
 {return CASE;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 116 "flexInput.txt"
+#line 109 "flexInput.txt"
 {return BREAK;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 117 "flexInput.txt"
+#line 110 "flexInput.txt"
 {return DEFAULT;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 119 "flexInput.txt"
+#line 112 "flexInput.txt"
 {return FOR;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 120 "flexInput.txt"
+#line 113 "flexInput.txt"
 {return FOREACH;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 121 "flexInput.txt"
+#line 114 "flexInput.txt"
 {return AS;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 122 "flexInput.txt"
+#line 115 "flexInput.txt"
 {return DO;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 123 "flexInput.txt"
+#line 116 "flexInput.txt"
 {return WHILE;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 125 "flexInput.txt"
+#line 118 "flexInput.txt"
 {return NEW;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 126 "flexInput.txt"
+#line 119 "flexInput.txt"
 {return CLASS;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 127 "flexInput.txt"
+#line 120 "flexInput.txt"
 {return THIS;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 128 "flexInput.txt"
+#line 121 "flexInput.txt"
 {return EXTENDS;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 129 "flexInput.txt"
+#line 122 "flexInput.txt"
 {return PUBLIC;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 130 "flexInput.txt"
+#line 123 "flexInput.txt"
 {return PUBLIC;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 131 "flexInput.txt"
+#line 124 "flexInput.txt"
 {return PRIVATE;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 132 "flexInput.txt"
+#line 125 "flexInput.txt"
 {return PROTECTED;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 133 "flexInput.txt"
+#line 126 "flexInput.txt"
 {return STATIC;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 134 "flexInput.txt"
+#line 127 "flexInput.txt"
 {return PARENT;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 136 "flexInput.txt"
+#line 129 "flexInput.txt"
 {return FUNCTION;}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 137 "flexInput.txt"
+#line 130 "flexInput.txt"
 {return RETURN;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 139 "flexInput.txt"
+#line 132 "flexInput.txt"
 {return ECHO;}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 140 "flexInput.txt"
+#line 133 "flexInput.txt"
 {return ECHO;}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 142 "flexInput.txt"
+#line 135 "flexInput.txt"
 {writeIdToUnion(yytext); return VARNAME;}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 143 "flexInput.txt"
+#line 136 "flexInput.txt"
 {writeIdToUnion(yytext); return ID;}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 145 "flexInput.txt"
+#line 138 "flexInput.txt"
 {return (unsigned char)'(';}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 146 "flexInput.txt"
+#line 139 "flexInput.txt"
 {return (unsigned char)')';}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 147 "flexInput.txt"
+#line 140 "flexInput.txt"
 {return (unsigned char)'[';}
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 148 "flexInput.txt"
+#line 141 "flexInput.txt"
 {return (unsigned char)']';}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 149 "flexInput.txt"
+#line 142 "flexInput.txt"
 {return (unsigned char)'{';}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 150 "flexInput.txt"
+#line 143 "flexInput.txt"
 {return (unsigned char)'}';}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 152 "flexInput.txt"
+#line 145 "flexInput.txt"
 {return SETVALUE;}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 153 "flexInput.txt"
+#line 146 "flexInput.txt"
 {return ARROW;}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 154 "flexInput.txt"
+#line 147 "flexInput.txt"
 {return (unsigned char)'.';}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 155 "flexInput.txt"
+#line 148 "flexInput.txt"
 {return (unsigned char)':';}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 156 "flexInput.txt"
+#line 149 "flexInput.txt"
 {return SCOPEOP;}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 158 "flexInput.txt"
+#line 151 "flexInput.txt"
 {return (unsigned char)',';}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 159 "flexInput.txt"
+#line 152 "flexInput.txt"
 {return (unsigned char)';';}
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 161 "flexInput.txt"
+#line 154 "flexInput.txt"
 {return (unsigned char)'!';}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 162 "flexInput.txt"
+#line 155 "flexInput.txt"
 {return COR;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 163 "flexInput.txt"
+#line 156 "flexInput.txt"
 {return CAND;}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 164 "flexInput.txt"
+#line 157 "flexInput.txt"
 {return POR;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 165 "flexInput.txt"
+#line 158 "flexInput.txt"
 {return PAND;}
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 167 "flexInput.txt"
+#line 160 "flexInput.txt"
 {return (unsigned char)'+';}
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 168 "flexInput.txt"
+#line 161 "flexInput.txt"
 {return PLUSAS;}
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 169 "flexInput.txt"
+#line 162 "flexInput.txt"
 {return (unsigned char)'-';}
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 170 "flexInput.txt"
+#line 163 "flexInput.txt"
 {return MINUSAS;}
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 171 "flexInput.txt"
+#line 164 "flexInput.txt"
 {return (unsigned char)'*';}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 172 "flexInput.txt"
+#line 165 "flexInput.txt"
 {return MULTAS;}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 173 "flexInput.txt"
+#line 166 "flexInput.txt"
 {return (unsigned char)'/';}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 174 "flexInput.txt"
+#line 167 "flexInput.txt"
 {return DIVAS;}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 175 "flexInput.txt"
+#line 168 "flexInput.txt"
 {return (unsigned char)'%';}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 176 "flexInput.txt"
+#line 169 "flexInput.txt"
 {return MODAS;}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 177 "flexInput.txt"
+#line 170 "flexInput.txt"
 {return INC;}
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 178 "flexInput.txt"
+#line 171 "flexInput.txt"
 {return DEC;}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 180 "flexInput.txt"
+#line 173 "flexInput.txt"
 {return EQ;}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 181 "flexInput.txt"
+#line 174 "flexInput.txt"
 {return NEQ;}
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 182 "flexInput.txt"
+#line 175 "flexInput.txt"
 {return NEQ;}
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 183 "flexInput.txt"
+#line 176 "flexInput.txt"
 {return (unsigned char)'>';}
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 184 "flexInput.txt"
+#line 177 "flexInput.txt"
 {return GEQ;}
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 185 "flexInput.txt"
+#line 178 "flexInput.txt"
 {return (unsigned char)'<';}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 186 "flexInput.txt"
+#line 179 "flexInput.txt"
 {return LEQ;}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 187 "flexInput.txt"
+#line 180 "flexInput.txt"
 {return TEQ;}
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 188 "flexInput.txt"
+#line 181 "flexInput.txt"
 {return TNEQ;}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 190 "flexInput.txt"
+#line 183 "flexInput.txt"
 {return (unsigned char)'=';}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 192 "flexInput.txt"
+#line 185 "flexInput.txt"
 ;
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 193 "flexInput.txt"
+#line 186 "flexInput.txt"
 printf("character_not_found");
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 195 "flexInput.txt"
+#line 188 "flexInput.txt"
 ECHO;
 	YY_BREAK
-#line 1507 "lex.yy.c"
+#line 1500 "lex.yy.c"
 			case YY_STATE_EOF(PHP):
 			case YY_STATE_EOF(STR):
 			case YY_STATE_EOF(STR_CONST):
@@ -2368,7 +2361,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 195 "flexInput.txt"
+#line 188 "flexInput.txt"
 
 
 void beginCondition()
@@ -2392,30 +2385,6 @@ void returnStartCondition()
 {
 	condition_num--;
 	BEGIN(start_condition[condition_num]);
-}
-
-void debugyy(char* msg, char* txt)
-{
-#ifdef PHP_DEBUG
-	if (msg != 0)
-		printf("DEBUG: %s: [%s]\n", msg, txt);
-	else
-		printf("%s\n", txt);
-#endif
-}
-
-void debug_clear(char* com)
-{
-#ifdef PHP_DEBUG
-	strcpy(com, "");
-#endif
-}
-
-void debug_strcat(char* com, char* txt)
-{
-#ifdef PHP_DEBUG
-	strcat(com, txt);
-#endif
 }
 
 void writeIntToUnion(char* num, char* base)
