@@ -1,5 +1,5 @@
 %{
-#include "bison_input_structs.c"
+#include "parser_structs.c"
 
 struct ProgramStruct* root;
 

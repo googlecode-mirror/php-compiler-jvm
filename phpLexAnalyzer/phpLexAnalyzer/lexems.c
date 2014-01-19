@@ -1,7 +1,7 @@
 %{
     #include <conio.h>
     #include <string.h>
-	#include "bison_input.yacc_tab.h"
+	#include "parser.h"
 	
 	extern union YYSTYPE yylval;
 
@@ -29,6 +29,7 @@
 %}
 %option noyywrap
 %option never-interactive
+%option outfile="lexer.c"
 
 OCT_DIGIT [0-7]
 HEX_DIGIT [0-9a-fA-F]

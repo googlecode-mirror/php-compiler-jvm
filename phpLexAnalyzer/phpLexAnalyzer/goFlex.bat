@@ -1,3 +1,2 @@
-rem lex.yy.c
-flex.exe -l flexInput.txt
+flex.exe -l lexems.c
 pause

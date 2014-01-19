@@ -1,5 +1,5 @@
 
-/*  A Bison parser, made from bison_input.yacc with Bison version GNU Bison version 1.24
+/*  A Bison parser, made from grammar.c with Bison version GNU Bison version 1.24
   */
 
 #define YYBISON 1  /* Identify Bison output.  */
@@ -59,9 +59,9 @@
 #define	UPLUS	310
 #define	UMINUS	311
 
-#line 1 "bison_input.yacc"
+#line 1 "grammar.c"
 
-#include "bison_input_structs.c"
+#include "parser_structs.c"
 
 struct ProgramStruct* root;
 
@@ -137,7 +137,7 @@ struct ProgramStmtListStruct* createProgramStmtList(struct ProgramStmtStruct* ne
 struct ProgramStmtListStruct* addProgramStmtToProgramStmtList(struct ProgramStmtListStruct* current_list, struct ProgramStmtStruct* new_element);
 struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 
-#line 80 "bison_input.yacc"
+#line 80 "grammar.c"
 typedef union { //yylval
 	int intConstUnionType;
 	char* charConstUnionType;
@@ -1099,495 +1099,495 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 205 "bison_input.yacc"
+#line 205 "grammar.c"
 {yyval.ProgramUnion = root = createProgram(yyvsp[0].ProgramStmtListUnion);;
     break;}
 case 2:
-#line 209 "bison_input.yacc"
+#line 209 "grammar.c"
 {yyval.ProgramStmtListUnion = createProgramStmtList(yyvsp[0].ProgramStmtUnion);;
     break;}
 case 3:
-#line 210 "bison_input.yacc"
+#line 210 "grammar.c"
 {yyval.ProgramStmtListUnion = addProgramStmtToProgramStmtList(yyvsp[-1].ProgramStmtListUnion, yyvsp[0].ProgramStmtUnion);;
     break;}
 case 4:
-#line 214 "bison_input.yacc"
+#line 214 "grammar.c"
 {yyval.ProgramStmtUnion = createProgramStmtMainStmtList(yyvsp[0].MainStmtListUnion);;
     break;}
 case 5:
-#line 215 "bison_input.yacc"
+#line 215 "grammar.c"
 {yyval.ProgramStmtUnion = createProgramStmtHtml(yyvsp[0].htmlUnionType);;
     break;}
 case 6:
-#line 219 "bison_input.yacc"
+#line 219 "grammar.c"
 {yyval.MainStmtListUnion = createMainStmtList(yyvsp[0].MainStmtUnion);;
     break;}
 case 7:
-#line 220 "bison_input.yacc"
+#line 220 "grammar.c"
 {yyval.MainStmtListUnion = addMainStmtToMainStmtList(yyvsp[-1].MainStmtListUnion, yyvsp[0].MainStmtUnion);;
     break;}
 case 8:
-#line 224 "bison_input.yacc"
+#line 224 "grammar.c"
 {yyval.MainStmtUnion = createMainStmtClass(yyvsp[0].ClassDefUnion);;
     break;}
 case 9:
-#line 225 "bison_input.yacc"
+#line 225 "grammar.c"
 {yyval.MainStmtUnion = createMainStmt(yyvsp[0].StmtUnion);;
     break;}
 case 10:
-#line 230 "bison_input.yacc"
+#line 230 "grammar.c"
 {yyval.ConstValueUnion = createConst(yyvsp[0].intConstUnionType, t_int);;
     break;}
 case 11:
-#line 231 "bison_input.yacc"
+#line 231 "grammar.c"
 {yyval.ConstValueUnion = createConst(yyvsp[0].intConstUnionType, t_bool);;
     break;}
 case 12:
-#line 232 "bison_input.yacc"
+#line 232 "grammar.c"
 {yyval.ConstValueUnion = createCharConst(yyvsp[0].charConstUnionType);;
     break;}
 case 13:
-#line 237 "bison_input.yacc"
+#line 237 "grammar.c"
 {yyval.ExprUnion = createConstExpr(yyvsp[0].ConstValueUnion);;
     break;}
 case 14:
-#line 238 "bison_input.yacc"
+#line 238 "grammar.c"
 {yyval.ExprUnion = yyvsp[-1].ExprUnion;
     break;}
 case 15:
-#line 239 "bison_input.yacc"
+#line 239 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_less);;
     break;}
 case 16:
-#line 240 "bison_input.yacc"
+#line 240 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_leq);;
     break;}
 case 17:
-#line 241 "bison_input.yacc"
+#line 241 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_greater);;
     break;}
 case 18:
-#line 242 "bison_input.yacc"
+#line 242 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_geq);;
     break;}
 case 19:
-#line 243 "bison_input.yacc"
+#line 243 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_eq);;
     break;}
 case 20:
-#line 244 "bison_input.yacc"
+#line 244 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_neq);;
     break;}
 case 21:
-#line 245 "bison_input.yacc"
+#line 245 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_teq);;
     break;}
 case 22:
-#line 246 "bison_input.yacc"
+#line 246 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_tneq);;
     break;}
 case 23:
-#line 247 "bison_input.yacc"
+#line 247 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[0].ExprUnion, t_not);;
     break;}
 case 24:
-#line 248 "bison_input.yacc"
+#line 248 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_cor);;
     break;}
 case 25:
-#line 249 "bison_input.yacc"
+#line 249 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_cand);;
     break;}
 case 26:
-#line 250 "bison_input.yacc"
+#line 250 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_por);;
     break;}
 case 27:
-#line 251 "bison_input.yacc"
+#line 251 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_pand);;
     break;}
 case 28:
-#line 252 "bison_input.yacc"
+#line 252 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_plus);;
     break;}
 case 29:
-#line 253 "bison_input.yacc"
+#line 253 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_minus);;
     break;}
 case 30:
-#line 254 "bison_input.yacc"
+#line 254 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_mult);;
     break;}
 case 31:
-#line 255 "bison_input.yacc"
+#line 255 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_div);;
     break;}
 case 32:
-#line 256 "bison_input.yacc"
+#line 256 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_mod);;
     break;}
 case 33:
-#line 257 "bison_input.yacc"
+#line 257 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[0].ExprUnion, t_uplus);;
     break;}
 case 34:
-#line 258 "bison_input.yacc"
+#line 258 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[0].ExprUnion, t_uminus);;
     break;}
 case 35:
-#line 259 "bison_input.yacc"
+#line 259 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_assign);;
     break;}
 case 36:
-#line 260 "bison_input.yacc"
+#line 260 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_plusas);;
     break;}
 case 37:
-#line 261 "bison_input.yacc"
+#line 261 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_minusas);;
     break;}
 case 38:
-#line 262 "bison_input.yacc"
+#line 262 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_mulas);;
     break;}
 case 39:
-#line 263 "bison_input.yacc"
+#line 263 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_divas);;
     break;}
 case 40:
-#line 264 "bison_input.yacc"
+#line 264 "grammar.c"
 {yyval.ExprUnion = createExpr(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion, t_modas);;
     break;}
 case 41:
-#line 265 "bison_input.yacc"
+#line 265 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[-1].ExprUnion, t_post_inc);;
     break;}
 case 42:
-#line 266 "bison_input.yacc"
+#line 266 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[-1].ExprUnion, t_post_dec);;
     break;}
 case 43:
-#line 267 "bison_input.yacc"
+#line 267 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[0].ExprUnion, t_pre_inc);;
     break;}
 case 44:
-#line 268 "bison_input.yacc"
+#line 268 "grammar.c"
 {yyval.ExprUnion = createUExpr(yyvsp[0].ExprUnion, t_pre_dec);;
     break;}
 case 45:
-#line 269 "bison_input.yacc"
+#line 269 "grammar.c"
 {yyval.ExprUnion = createVarExpr(yyvsp[0].VarUnion);;
     break;}
 case 46:
-#line 270 "bison_input.yacc"
+#line 270 "grammar.c"
 {yyval.ExprUnion = createStrExpr(yyvsp[0].StringUnion);;
     break;}
 case 47:
-#line 271 "bison_input.yacc"
+#line 271 "grammar.c"
 {yyval.ExprUnion = createArrayExpr(yyvsp[-1].ArrayUnion);;
     break;}
 case 48:
-#line 272 "bison_input.yacc"
+#line 272 "grammar.c"
 {yyval.ExprUnion = createFuncCallExpr(yyvsp[-3].idUnionType, yyvsp[-1].ExprListUnion);;
     break;}
 case 49:
-#line 276 "bison_input.yacc"
+#line 276 "grammar.c"
 {yyval.ExprListUnion = createExprList(yyvsp[0].ExprUnion);;
     break;}
 case 50:
-#line 277 "bison_input.yacc"
+#line 277 "grammar.c"
 {yyval.ExprListUnion = addExprToExprList(yyvsp[-2].ExprListUnion, yyvsp[0].ExprUnion);;
     break;}
 case 51:
-#line 281 "bison_input.yacc"
+#line 281 "grammar.c"
 {yyval.ExprListUnion = 0;;
     break;}
 case 52:
-#line 282 "bison_input.yacc"
+#line 282 "grammar.c"
 {yyval.ExprListUnion = yyvsp[0].ExprListUnion;;
     break;}
 case 53:
-#line 286 "bison_input.yacc"
+#line 286 "grammar.c"
 {yyval.ExprListUnion = 0;;
     break;}
 case 54:
-#line 287 "bison_input.yacc"
+#line 287 "grammar.c"
 {yyval.ExprListUnion = yyvsp[0].ExprUnion;;
     break;}
 case 55:
-#line 292 "bison_input.yacc"
+#line 292 "grammar.c"
 {yyval.StringUnion = createString(yyvsp[-2].charConstUnionType, yyvsp[-1].idUnionType, yyvsp[0].charConstUnionType);;
     break;}
 case 56:
-#line 293 "bison_input.yacc"
+#line 293 "grammar.c"
 {yyval.StringUnion = addElementToString(yyvsp[-2].StringUnion, yyvsp[-1].idUnionType, yyvsp[0].charConstUnionType);;
     break;}
 case 57:
-#line 298 "bison_input.yacc"
+#line 298 "grammar.c"
 {yyval.VarElementUnion = createVariableFieldElement(yyvsp[0].idUnionType);;
     break;}
 case 58:
-#line 299 "bison_input.yacc"
+#line 299 "grammar.c"
 {yyval.VarElementUnion = createVariableMethodElement(yyvsp[-3].idUnionType, yyvsp[-1].ExprListUnion);;
     break;}
 case 59:
-#line 302 "bison_input.yacc"
+#line 302 "grammar.c"
 {yyval.VarElementUnion = createVariableIndexElement(yyvsp[-1].ExprUnion);;
     break;}
 case 60:
-#line 306 "bison_input.yacc"
+#line 306 "grammar.c"
 {yyval.VarElementListUnion = createElementsList(yyvsp[0].VarElementUnion);;
     break;}
 case 61:
-#line 307 "bison_input.yacc"
+#line 307 "grammar.c"
 {yyval.VarElementListUnion = addElementToElementsList(yyvsp[-1].VarElementListUnion, yyvsp[0].VarElementUnion);;
     break;}
 case 62:
-#line 311 "bison_input.yacc"
+#line 311 "grammar.c"
 {yyval.VarElementListUnion = 0;;
     break;}
 case 63:
-#line 312 "bison_input.yacc"
+#line 312 "grammar.c"
 {yyval.VarElementListUnion = yyvsp[0].VarElementListUnion;;
     break;}
 case 64:
-#line 316 "bison_input.yacc"
+#line 316 "grammar.c"
 {yyval.VarUnion = createVariable(yyvsp[-1].idUnionType, yyvsp[0].VarElementListUnion);;
     break;}
 case 65:
-#line 320 "bison_input.yacc"
+#line 320 "grammar.c"
 {yyval.VarListElementUnion = createVarListElement(yyvsp[0].idUnionType);;
     break;}
 case 66:
-#line 321 "bison_input.yacc"
+#line 321 "grammar.c"
 {yyval.VarListElementUnion = createVarListElementWithValue(yyvsp[-2].idUnionType, yyvsp[0].ExprUnion);;
     break;}
 case 67:
-#line 325 "bison_input.yacc"
+#line 325 "grammar.c"
 {yyval.VarListUnion = createVarList(yyvsp[0].VarListElementUnion);;
     break;}
 case 68:
-#line 326 "bison_input.yacc"
+#line 326 "grammar.c"
 {yyval.VarListUnion = addElementToVarList(yyvsp[-2].VarListUnion, yyvsp[0].VarListElementUnion);;
     break;}
 case 69:
-#line 331 "bison_input.yacc"
+#line 331 "grammar.c"
 {yyval.ArrayElementUnion = createArrayElement(yyvsp[0].ExprUnion);;
     break;}
 case 70:
-#line 332 "bison_input.yacc"
+#line 332 "grammar.c"
 {yyval.ArrayElementUnion = createArrayElementWithValue(yyvsp[-2].ExprUnion, yyvsp[0].ExprUnion);;
     break;}
 case 71:
-#line 336 "bison_input.yacc"
+#line 336 "grammar.c"
 {yyval.ArrayUnion = createArrayElementsList(yyvsp[0].ArrayElementUnion);;
     break;}
 case 72:
-#line 337 "bison_input.yacc"
+#line 337 "grammar.c"
 {yyval.ArrayUnion = addElementToArrayElementsList(yyvsp[-2].ArrayUnion, yyvsp[0].ArrayElementUnion);;
     break;}
 case 73:
-#line 341 "bison_input.yacc"
+#line 341 "grammar.c"
 {yyval.ArrayUnion = 0;;
     break;}
 case 74:
-#line 342 "bison_input.yacc"
+#line 342 "grammar.c"
 {yyval.ArrayUnion = yyvsp[0].ArrayUnion;;
     break;}
 case 75:
-#line 347 "bison_input.yacc"
+#line 347 "grammar.c"
 {yyval.IfStmtUnion = createIfStmt(yyvsp[-2].ExprUnion, yyvsp[0].StmtUnion);;
     break;}
 case 76:
-#line 348 "bison_input.yacc"
+#line 348 "grammar.c"
 {yyval.IfStmtUnion = createIfElseStmt(yyvsp[-4].ExprUnion, yyvsp[-2].StmtUnion, yyvsp[0].StmtUnion);;
     break;}
 case 77:
-#line 349 "bison_input.yacc"
+#line 349 "grammar.c"
 {yyval.IfStmtUnion = createIfElseIfStmt(yyvsp[-3].ExprUnion, yyvsp[-1].StmtUnion, yyvsp[0].IfStmtUnion);;
     break;}
 case 78:
-#line 353 "bison_input.yacc"
+#line 353 "grammar.c"
 {yyval.IfStmtUnion = createIfStmt(yyvsp[-2].ExprUnion, yyvsp[0].StmtUnion);;
     break;}
 case 79:
-#line 354 "bison_input.yacc"
+#line 354 "grammar.c"
 {yyval.IfStmtUnion = createIfElseStmt(yyvsp[-4].ExprUnion, yyvsp[-2].StmtUnion, yyvsp[0].StmtUnion);;
     break;}
 case 80:
-#line 355 "bison_input.yacc"
+#line 355 "grammar.c"
 {yyval.IfStmtUnion = createIfElseIfStmt(yyvsp[-3].ExprUnion, yyvsp[-1].StmtUnion, yyvsp[0].IfStmtUnion);;
     break;}
 case 81:
-#line 359 "bison_input.yacc"
+#line 359 "grammar.c"
 {yyval.CaseUnion = createCaseStmt(yyvsp[-2].ExprUnion, yyvsp[0].StmtListUnion);;
     break;}
 case 82:
-#line 363 "bison_input.yacc"
+#line 363 "grammar.c"
 {yyval.CaseStmtListUnion = createCaseStmtList(yyvsp[0].CaseUnion);;
     break;}
 case 83:
-#line 364 "bison_input.yacc"
+#line 364 "grammar.c"
 {yyval.CaseStmtListUnion = addCaseStmtToCaseStmtList(yyvsp[-1].CaseStmtListUnion, yyvsp[0].CaseUnion);;
     break;}
 case 84:
-#line 368 "bison_input.yacc"
+#line 368 "grammar.c"
 {yyval.SwitchStmtUnion = createSwitchStmt(yyvsp[-4].ExprUnion, yyvsp[-1].CaseStmtListUnion);;
     break;}
 case 85:
-#line 369 "bison_input.yacc"
+#line 369 "grammar.c"
 {yyval.SwitchStmtUnion = createSwitchStmtWithDefault(yyvsp[-6].ExprUnion, yyvsp[-3].CaseStmtListUnion, yyvsp[0].StmtListUnion);;
     break;}
 case 86:
-#line 374 "bison_input.yacc"
+#line 374 "grammar.c"
 {yyval.ForStmtUnion = createForStmt(yyvsp[-6].ExprListUnion, yyvsp[-4].ExprListUnion, yyvsp[-2].ExprListUnion, yyvsp[0].StmtUnion);;
     break;}
 case 87:
-#line 378 "bison_input.yacc"
+#line 378 "grammar.c"
 {yyval.WhileStmtUnion = createWhileStmt(yyvsp[-2].ExprUnion, yyvsp[-6].StmtUnion, t_do_while);;
     break;}
 case 88:
-#line 382 "bison_input.yacc"
+#line 382 "grammar.c"
 {yyval.WhileStmtUnion = createWhileStmt(yyvsp[-2].ExprUnion, yyvsp[0].StmtUnion, t_while);;
     break;}
 case 89:
-#line 386 "bison_input.yacc"
+#line 386 "grammar.c"
 {yyval.ForeachStmtUnion = createForeachStmt(yyvsp[-4].ExprUnion, yyvsp[-2].idUnionType, yyvsp[0].StmtUnion);;
     break;}
 case 90:
-#line 387 "bison_input.yacc"
+#line 387 "grammar.c"
 {yyval.ForeachStmtUnion = createForeachStmtWithKey(yyvsp[-6].ExprUnion, yyvsp[-4].idUnionType, yyvsp[-2].idUnionType, yyvsp[0].StmtUnion);;
     break;}
 case 91:
-#line 392 "bison_input.yacc"
+#line 392 "grammar.c"
 {yyval.StmtUnion = createStmtExpr(yyvsp[-1].ExprUnion);;
     break;}
 case 92:
-#line 393 "bison_input.yacc"
+#line 393 "grammar.c"
 {yyval.StmtUnion = createStmtIf(yyvsp[0].IfStmtUnion);;
     break;}
 case 93:
-#line 394 "bison_input.yacc"
+#line 394 "grammar.c"
 {yyval.StmtUnion = createStmtSwitch(yyvsp[0].SwitchStmtUnion);;
     break;}
 case 94:
-#line 395 "bison_input.yacc"
+#line 395 "grammar.c"
 {yyval.StmtUnion = createStmtFor(yyvsp[0].ForStmtUnion);;
     break;}
 case 95:
-#line 396 "bison_input.yacc"
+#line 396 "grammar.c"
 {yyval.StmtUnion = createStmtWhile(yyvsp[0].WhileStmtUnion);;
     break;}
 case 96:
-#line 397 "bison_input.yacc"
+#line 397 "grammar.c"
 {yyval.StmtUnion = createStmtWhile(yyvsp[0].WhileStmtUnion);;
     break;}
 case 97:
-#line 398 "bison_input.yacc"
+#line 398 "grammar.c"
 {yyval.StmtUnion = createStmtForeach(yyvsp[0].ForeachStmtUnion);;
     break;}
 case 98:
-#line 399 "bison_input.yacc"
+#line 399 "grammar.c"
 {yyval.StmtUnion = createStmtFuncDef(yyvsp[0].FuncDefUnion);;
     break;}
 case 99:
-#line 400 "bison_input.yacc"
+#line 400 "grammar.c"
 {yyval.StmtUnion = createStmtEcho(yyvsp[0].ExprUnion);;
     break;}
 case 100:
-#line 401 "bison_input.yacc"
+#line 401 "grammar.c"
 {yyval.StmtUnion = createStmtBreak();;
     break;}
 case 101:
-#line 402 "bison_input.yacc"
+#line 402 "grammar.c"
 {yyval.StmtUnion = createStmtReturn(yyvsp[-1].ExprListUnion);;
     break;}
 case 102:
-#line 403 "bison_input.yacc"
+#line 403 "grammar.c"
 {yyval.StmtUnion = createStmtStmtlist(yyvsp[-1].StmtListUnion);;
     break;}
 case 103:
-#line 404 "bison_input.yacc"
+#line 404 "grammar.c"
 {yyval.StmtUnion = createStmtVoid();;
     break;}
 case 104:
-#line 408 "bison_input.yacc"
+#line 408 "grammar.c"
 {yyval.StmtListUnion = createStmtList(yyvsp[0].StmtUnion);;
     break;}
 case 105:
-#line 409 "bison_input.yacc"
+#line 409 "grammar.c"
 {yyval.StmtListUnion = addStmtToStmtList(yyvsp[-1].StmtListUnion, yyvsp[0].StmtUnion);;
     break;}
 case 106:
-#line 413 "bison_input.yacc"
+#line 413 "grammar.c"
 {yyval.StmtListUnion = 0;;
     break;}
 case 107:
-#line 414 "bison_input.yacc"
+#line 414 "grammar.c"
 {yyval.StmtListUnion = yyvsp[0].StmtListUnion;
     break;}
 case 108:
-#line 419 "bison_input.yacc"
+#line 419 "grammar.c"
 {yyval.FuncDefUnion = createFuncDef(yyvsp[-6].idUnionType, yyvsp[-4].VarListUnion, yyvsp[-1].StmtListUnion);;
     break;}
 case 109:
-#line 424 "bison_input.yacc"
+#line 424 "grammar.c"
 {yyval.FieldUnion = createField(yyvsp[0].idUnionType, t_public);;
     break;}
 case 110:
-#line 425 "bison_input.yacc"
+#line 425 "grammar.c"
 {yyval.FieldUnion = createField(yyvsp[0].idUnionType, t_private);;
     break;}
 case 111:
-#line 426 "bison_input.yacc"
+#line 426 "grammar.c"
 {yyval.FieldUnion = createField(yyvsp[0].idUnionType, t_protected);;
     break;}
 case 112:
-#line 430 "bison_input.yacc"
+#line 430 "grammar.c"
 {yyval.ClassBodyElementUnion = createFieldElement(yyvsp[-1].FieldUnion);;
     break;}
 case 113:
-#line 431 "bison_input.yacc"
+#line 431 "grammar.c"
 {yyval.ClassBodyElementUnion = createFieldWithValue(yyvsp[-3].FieldUnion, yyvsp[-1].ConstValueUnion);;
     break;}
 case 114:
-#line 432 "bison_input.yacc"
+#line 432 "grammar.c"
 {yyval.ClassBodyElementUnion = createMethod(yyvsp[0].FuncDefUnion, t_public);;
     break;}
 case 115:
-#line 433 "bison_input.yacc"
+#line 433 "grammar.c"
 {yyval.ClassBodyElementUnion = createMethod(yyvsp[0].FuncDefUnion, t_public);;
     break;}
 case 116:
-#line 434 "bison_input.yacc"
+#line 434 "grammar.c"
 {yyval.ClassBodyElementUnion = createMethod(yyvsp[0].FuncDefUnion, t_private);;
     break;}
 case 117:
-#line 435 "bison_input.yacc"
+#line 435 "grammar.c"
 {yyval.ClassBodyElementUnion = createMethod(yyvsp[0].FuncDefUnion, t_protected);;
     break;}
 case 118:
-#line 439 "bison_input.yacc"
+#line 439 "grammar.c"
 {yyval.ClassBodyElementsListUnion = createBody(yyvsp[0].ClassBodyElementUnion);;
     break;}
 case 119:
-#line 440 "bison_input.yacc"
+#line 440 "grammar.c"
 {yyval.ClassBodyElementsListUnion = addElementToBody(yyvsp[-1].ClassBodyElementsListUnion, yyvsp[0].ClassBodyElementUnion);;
     break;}
 case 120:
-#line 444 "bison_input.yacc"
+#line 444 "grammar.c"
 {yyval.ClassBodyElementsListUnion = 0;;
     break;}
 case 121:
-#line 445 "bison_input.yacc"
+#line 445 "grammar.c"
 {yyval.ClassBodyElementsListUnion = yyvsp[0].ClassBodyElementsListUnion;;
     break;}
 case 122:
-#line 449 "bison_input.yacc"
+#line 449 "grammar.c"
 {yyval.ClassDefUnion = createClass(yyvsp[-3].idUnionType, yyvsp[-1].ClassBodyElementsListUnion);;
     break;}
 case 123:
-#line 450 "bison_input.yacc"
+#line 450 "grammar.c"
 {yyval.ClassDefUnion = createExtendedClass(yyvsp[-5].idUnionType, yyvsp[-3].idUnionType, yyvsp[-1].ClassBodyElementsListUnion);;
     break;}
 }
@@ -1788,7 +1788,7 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 453 "bison_input.yacc"
+#line 453 "grammar.c"
 
 
 struct ConstValueStruct* createConst(int new_const, enum ConstValueType type)

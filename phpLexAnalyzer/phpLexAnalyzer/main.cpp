@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
-#include "bison_input.yacc_tab.h"
-//#include "lex.yy.c"
+#include "parser_structs.h"
+//#include "lexer.c"
 #include <windows.h>
 
 //extern "C" union YYSTYPE yylval;
