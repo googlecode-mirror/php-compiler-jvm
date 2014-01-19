@@ -1,5 +1,10 @@
 %{
-#include "parser_structs.c"
+#include "parser_structs.h"
+#include <stdio.h>
+#include <malloc.h>
+
+void yyerror(char const *s);
+extern int yylex(void);
 
 struct ProgramStruct* root;
 
@@ -38,10 +43,10 @@ struct CaseStmtListStruct* createCaseStmtList(struct CaseStruct* new_element);
 struct CaseStmtListStruct* addCaseStmtToCaseStmtList(struct CaseStmtListStruct* current_list, struct CaseStruct* new_element);
 struct SwitchStmtStruct* createSwitchStmt(struct ExprStruct* new_expr, struct CaseStmtListStruct* new_case_list);
 struct SwitchStmtStruct* createSwitchStmtWithDefault(struct ExprStruct* new_expr, struct CaseStmtListStruct* new_case_list, struct StmtListStruct* new_default_stmt);
-struct ForStmtStruct* createForStmt(struct ExprStruct* new_start_expr, struct ExprStruct* new_condition, struct ExprStruct* new_end_action, struct StmtListStruct* new_stmt);
-struct WhileStmtStruct* createWhileStmt(struct ExprStruct* new_condition, struct StmtListStruct* new_stmt, enum WhileType new_type);
-struct ForeachStmtStruct* createForeachStmt(struct ExprStruct* new_array, char* new_value, struct StmtListStruct* new_stmt);
-struct ForeachStmtStruct* createForeachStmtWithKey(struct ExprStruct* new_array, char* new_key, char* new_value, struct StmtListStruct* new_stmt);
+struct ForStmtStruct* createForStmt(struct ExprStruct* new_start_expr, struct ExprStruct* new_condition, struct ExprStruct* new_end_action, struct StmtStruct* new_stmt);
+struct WhileStmtStruct* createWhileStmt(struct ExprStruct* new_condition, struct StmtStruct* new_stmt, enum WhileType new_type);
+struct ForeachStmtStruct* createForeachStmt(struct ExprStruct* new_array, char* new_value, struct StmtStruct* new_stmt);
+struct ForeachStmtStruct* createForeachStmtWithKey(struct ExprStruct* new_array, char* new_key, char* new_value, struct StmtStruct* new_stmt);
 struct StmtStruct* createStmtExpr(struct ExprStruct* new_expr);
 struct StmtStruct* createStmtIf(struct IfStmtStruct* new_if_stmt);
 struct StmtStruct* createStmtSwitch(struct SwitchStmtStruct* new_switch_stmt);
@@ -66,7 +71,7 @@ struct ClassBodyElementsListStruct* addElementToBody(struct ClassBodyElementsLis
 struct ClassDefStruct* createClass(char* new_id, struct ClassBodyElementsListStruct* new_body);
 struct ClassDefStruct* createExtendedClass(char* new_id, char* new_parentId, struct ClassBodyElementsListStruct* new_body);
 struct MainStmtStruct* createMainStmtClass(struct ClassDefStruct* new_class_def);
-struct MainStmtStruct* createMainStmt(struct ClassDefStruct* new_stmt);
+struct MainStmtStruct* createMainStmt(struct StmtStruct* new_stmt);
 struct MainStmtListStruct* createMainStmtList(struct MainStmtStruct* new_element);
 struct MainStmtListStruct* addMainStmtToMainStmtList(struct MainStmtListStruct* current_list, struct MainStmtStruct* new_element);
 struct ProgramStmtStruct* createProgramStmtMainStmtList(struct MainStmtListStruct* new_main_stmt_list);
@@ -117,9 +122,9 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 
 %type <ConstValueUnion>const_value
 %type <ExprUnion>expr
+%type <ExprUnion>expr_e
 %type <ExprListUnion>expr_list_ne
 %type <ExprListUnion>expr_list
-%type <ExprListUnion>expr_e
 %type <StringUnion>string
 %type <VarElementUnion>variable_element
 %type <VarElementListUnion>variable_element_list_ne
@@ -758,7 +763,7 @@ struct SwitchStmtStruct* createSwitchStmtWithDefault(struct ExprStruct* new_expr
 	return result;
 }
 
-struct ForStmtStruct* createForStmt(struct ExprStruct* new_start_expr, struct ExprStruct* new_condition, struct ExprStruct* new_end_action, struct StmtListStruct* new_stmt)
+struct ForStmtStruct* createForStmt(struct ExprStruct* new_start_expr, struct ExprStruct* new_condition, struct ExprStruct* new_end_action, struct StmtStruct* new_stmt)
 {
 	struct ForStmtStruct* result = (struct ForStmtStruct*)malloc(sizeof(struct ForStmtStruct));
 	result->start_expr = new_start_expr;
@@ -768,7 +773,7 @@ struct ForStmtStruct* createForStmt(struct ExprStruct* new_start_expr, struct Ex
 	return result;
 }
 
-struct WhileStmtStruct* createWhileStmt(struct ExprStruct* new_condition, struct StmtListStruct* new_stmt, enum WhileType new_type)
+struct WhileStmtStruct* createWhileStmt(struct ExprStruct* new_condition, struct StmtStruct* new_stmt, enum WhileType new_type)
 {
 	struct WhileStmtStruct* result = (struct WhileStmtStruct*)malloc(sizeof(struct WhileStmtStruct));
 	result->type = new_type;
@@ -777,7 +782,7 @@ struct WhileStmtStruct* createWhileStmt(struct ExprStruct* new_condition, struct
 	return result;
 }
 
-struct ForeachStmtStruct* createForeachStmt(struct ExprStruct* new_array, char* new_value, struct StmtListStruct* new_stmt)
+struct ForeachStmtStruct* createForeachStmt(struct ExprStruct* new_array, char* new_value, struct StmtStruct* new_stmt)
 {
 	struct ForeachStmtStruct* result = (struct ForeachStmtStruct*)malloc(sizeof(struct ForeachStmtStruct));
 	result->array = new_array;
@@ -786,7 +791,7 @@ struct ForeachStmtStruct* createForeachStmt(struct ExprStruct* new_array, char* 
 	return result;
 }
 
-struct ForeachStmtStruct* createForeachStmtWithKey(struct ExprStruct* new_array, char* new_key, char* new_value, struct StmtListStruct* new_stmt)
+struct ForeachStmtStruct* createForeachStmtWithKey(struct ExprStruct* new_array, char* new_key, char* new_value, struct StmtStruct* new_stmt)
 {
 	struct ForeachStmtStruct* result = (struct ForeachStmtStruct*)malloc(sizeof(struct ForeachStmtStruct));
 	result->array = new_array;
@@ -987,7 +992,7 @@ struct MainStmtStruct* createMainStmtClass(struct ClassDefStruct* new_class_def)
 	return result;
 }
 
-struct MainStmtStruct* createMainStmt(struct ClassDefStruct* new_stmt)
+struct MainStmtStruct* createMainStmt(struct StmtStruct* new_stmt)
 {
 	struct MainStmtStruct* result = (struct MainStmtStruct*)malloc(sizeof(struct MainStmtStruct));
 	result->type = t_stmt;
