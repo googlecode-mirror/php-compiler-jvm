@@ -3,7 +3,7 @@
     #include <string.h>
 	#include "parser.h"
 	
-	extern union YYSTYPE yylval;
+	extern YYSTYPE yylval;
 
 	int start_condition[64];
 	int condition_num = 0;

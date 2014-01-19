@@ -4,7 +4,7 @@
 #include <malloc.h>
 
 void yyerror(char const *s);
-extern int yylex(void);
+extern "C" int yylex(void);
 
 struct ProgramStruct* root;
 
@@ -456,6 +456,11 @@ class_def:
 ;
 
 %%
+
+void yyerror(char const *s)
+{
+	fprintf(stderr, "%s: ", s);
+}
 
 struct ConstValueStruct* createConst(int new_const, enum ConstValueType type)
 {

@@ -196,7 +196,11 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\flexInput.txt"
+			RelativePath=".\grammar.y"
+			>
+		</File>
+		<File
+			RelativePath=".\lexems.l"
 			>
 		</File>
 	</Files>

@@ -1,1 +1,2 @@
-Debug\phpLexAnalyzer.exe testing.txt
+..\debug\phpLexAnalyzer.exe testing.txt
+pause
