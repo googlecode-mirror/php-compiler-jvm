@@ -8,15 +8,12 @@
 //#include "lexer.c"
 #include <windows.h>
 
-
 extern int yyparse(void);
 
 extern "C" FILE* yyin;
 
-
 int main(int argc,char* argv[])
 {
-
 	setlocale(LC_ALL,"rus");
 
 	printf("1.%s\n", argv[1]);
@@ -33,4 +30,3 @@ int main(int argc,char* argv[])
 
     getch();
 }
-
