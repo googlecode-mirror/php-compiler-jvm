@@ -14,10 +14,8 @@ struct ExprStruct* createArrayExpr(struct ArrayStruct* new_array);
 struct ExprStruct* createFuncCallExpr(char* new_id, struct ExprListStruct* new_list);
 struct ExprListStruct* createExprList(struct ExprStruct* new_expr);
 struct ExprListStruct* addExprToExprList(struct ExprListStruct* expr_list, struct ExprStruct* new_expr);
-struct StringElementStruct* createCharString(char* new_const_char);
-struct StringElementStruct* createVarString(struct VarStruct* new_var);
-struct StringStruct* createString(struct StringElementStruct* new_string_element);
-struct StringStruct* addElementToString(struct StringStruct* current_string, struct StringElementStruct* new_element);
+struct StringStruct* createString(char* first_char_const, char* first_varname, char* second_char_const);
+struct StringStruct* addElementToString(struct StringStruct* current_string, char* varname, char* char_const);
 struct VarElementStruct* createVariableFieldElement(char* new_member);
 struct VarElementStruct* createVariableMethodElement(char* new_member, struct ExprListStruct* new_params);
 struct VarElementStruct* createVariableIndexElement(struct ExprStruct* new_index);
@@ -68,7 +66,6 @@ struct ClassBodyElementsListStruct* addElementToBody(struct ClassBodyElementsLis
 struct ClassDefStruct* createClass(char* new_id, struct ClassBodyElementsListStruct* new_body);
 struct ClassDefStruct* createExtendedClass(char* new_id, char* new_parentId, struct ClassBodyElementsListStruct* new_body);
 struct MainStmtStruct* createMainStmtClass(struct ClassDefStruct* new_class_def);
-struct MainStmtStruct* createMainStmtFuncDefStmt(struct FuncDefStruct* new_func_def);
 struct MainStmtStruct* createMainStmt(struct ClassDefStruct* new_stmt);
 struct MainStmtListStruct* createMainStmtList(struct MainStmtStruct* new_element);
 struct MainStmtListStruct* addMainStmtToMainStmtList(struct MainStmtListStruct* current_list, struct MainStmtStruct* new_element);
@@ -89,7 +86,6 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 	struct ConstValueStruct* ConstValueUnion;
 	struct ExprStruct* ExprUnion;
 	struct ExprListStruct* ExprListUnion;
-	struct StringElementStruct* StringElementUnion;
 	struct StringStruct* StringUnion;
 	struct VarElementStruct* VarElementUnion;
 	struct VarElementListStruct* VarElementListUnion;
@@ -124,7 +120,6 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 %type <ExprListUnion>expr_list_ne
 %type <ExprListUnion>expr_list
 %type <ExprListUnion>expr_e
-%type <StringElementUnion>string_element
 %type <StringUnion>string
 %type <VarElementUnion>variable_element
 %type <VarElementListUnion>variable_element_list_ne
@@ -171,6 +166,7 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 %token ECHO
 %token <idUnionType>ID
 %token <idUnionType>VARNAME
+%token <idUnionType>VARNAME_IN_STR
 %token SETVALUE ARROW SCOPEOP											//TO DO реализовать SCOPEOP
 %token COR CAND POR PAND
 %token PLUSAS MINUSAS MULTAS DIVAS MODAS 								//TO DO добавить оператор точку и точку_равно
@@ -226,7 +222,6 @@ main_stmt_list:
 
 main_stmt:
 	class_def									{$$ = createMainStmtClass($1);}
-|	function_declaration						{$$ = createMainStmtFuncDefStmt($1);}
 |	stmt										{$$ = createMainStmt($1);}
 ;
 
@@ -292,28 +287,10 @@ expr_e:
 |	expr										{$$ = $1;}
 ;
 
-/* =============== STRING_HEREDOC =============== */
-// string_heredoc:
-	// CHAR_CONST
-// |	string_heredoc variable CHAR_CONST
-// ;
-
-// string:
-	// CHAR_CONST									{$$ = createCharString($1);}
-// |	variable									{$$ = createVarString($1);}
-// |	string_heredoc	
-// |	string '.' string							{$$ = addStringToString($1, $2);}
-// ;
-
 /* =============== STRING =============== */
-string_element:
-	CHAR_CONST									{$$ = createCharString($1);}
-|	variable									{$$ = createVarString($1);}
-;
-
 string:
-	string_element								{$$ = createString($1);}
-|	string '.' string_element					{$$ = addElementToString($1, $3);}
+	CHAR_CONST VARNAME_IN_STR CHAR_CONST		{$$ = createString($1, $2, $3);}
+|	string VARNAME_IN_STR CHAR_CONST			{$$ = addElementToString($1, $2, $3);}
 ;
 
 /* =============== VARNAME/VARIABLE =============== */
@@ -564,34 +541,43 @@ struct ExprListStruct* addExprToExprList(struct ExprListStruct* expr_list, struc
 	return expr_list;
 }
 
-struct StringElementStruct* createCharString(char* new_const_char)
-{
-	struct StringElementStruct* result = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
-	result->type = t_const_string;
-	result->const_char = new_const_char;
-	return result;
-}
-
-struct StringElementStruct* createVarString(struct VarStruct* new_var)
-{
-	struct StringElementStruct* result = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
-	result->type = t_variable;
-	result->var = new_var;
-	return result;
-}
-
-struct StringStruct* createString(struct StringElementStruct* new_string_element)
+struct StringStruct* createString(char* first_char_const, char* first_varname, char* second_char_const)
 {
 	struct StringStruct* result = (struct StringStruct*)malloc(sizeof(struct StringStruct));
-	result->first = new_string_element;
-	result->last = new_string_element;
+
+	struct StringElementStruct* first_element = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
+	first_element->type = t_const_string;
+	first_element->const_char = first_char_const;
+
+	struct StringElementStruct* second_element = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
+	second_element->type = t_variable;
+	second_element->const_char = first_varname;
+
+	struct StringElementStruct* third_element = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
+	third_element->type = t_const_string;
+	third_element->const_char = second_char_const;
+
+	first_element->next = second_element;
+	second_element->next = third_element;
+
+	result->first = first_element;
+	result->last = third_element;
 	return result;
 }
 
-struct StringStruct* addElementToString(struct StringStruct* current_string, struct StringElementStruct* new_element)
+struct StringStruct* addElementToString(struct StringStruct* current_string, char* varname, char* char_const)
 {
-	current_string->last->next = new_element;
-	current_string->last = new_element;
+	struct StringElementStruct* first_element = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
+	first_element->type = t_variable;
+	first_element->const_char = varname;
+
+	struct StringElementStruct* second_element = (struct StringElementStruct*)malloc(sizeof(struct StringElementStruct));
+	second_element->type = t_const_string;
+	second_element->const_char = char_const;
+
+	current_string->last->next = first_element;
+	first_element->next = second_element;
+	current_string->last = second_element;
 	return current_string;
 }
 
@@ -998,14 +984,6 @@ struct MainStmtStruct* createMainStmtClass(struct ClassDefStruct* new_class_def)
 	struct MainStmtStruct* result = (struct MainStmtStruct*)malloc(sizeof(struct MainStmtStruct));
 	result->type = t_class_def;
 	result->class_def = new_class_def;
-	return result;
-}
-
-struct MainStmtStruct* createMainStmtFuncDefStmt(struct FuncDefStruct* new_func_def)
-{
-	struct MainStmtStruct* result = (struct MainStmtStruct*)malloc(sizeof(struct MainStmtStruct));
-	result->type = t_func_def;
-	result->func_def = new_func_def;
 	return result;
 }
 

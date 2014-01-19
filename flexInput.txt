@@ -49,20 +49,11 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 
 %x PHP
 %x STR
-%x STR_SINGLE_QUOTATION
+%x STR_CONST
 %x HEREDOC
 %x NOWDOC
 %x COMMENT
-%x VAR
-%x COMPLEX_VAR
-%x VAR_BEGIN
-%x COMPLEX_VAR_BEGIN
-%x VAR_ARROW
-%x VAR_INDEX
-%x VAR_INDEX_BEGIN
-%x VAR_INDEX_EXPR
-%x VAR1
-%x VAR2
+%x VAR_IN_STR
 
 %%
 
@@ -76,41 +67,19 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 <PHP>"<<<"{ID}|(\"{ID}\")$ {getDocName(); strcpy(lexem, ""); addStartCondition(HEREDOC);}
 <PHP>"<<<"\'{ID}\'$ {getDocName(); strcpy(lexem, ""); addStartCondition(NOWDOC);}
 <PHP>\" {strcpy(lexem, ""); addStartCondition(STR);}
-<PHP>\' {strcpy(lexem, ""); addStartCondition(STR_SINGLE_QUOTATION);}
+<PHP>\' {strcpy(lexem, ""); addStartCondition(STR_CONST);}
 
 <HEREDOC,NOWDOC>^{ID};?$ {if (docNameCheck(docName, yytext)) {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;} else strcat(lexem, yytext);}
 <STR>\" {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;}
-<STR_SINGLE_QUOTATION>\' {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;}
+<STR_CONST>\' {writeCharToUnion(lexem); returnStartCondition(); return CHAR_CONST;}
 
-<HEREDOC,STR>\${ID} {writeCharToUnion(lexem); strcpy(lexem, yytext+1); unput('1'); addStartCondition(VAR1); return CHAR_CONST;}
-<HEREDOC,STR>\{\${ID} {writeCharToUnion(lexem); strcpy(lexem, yytext+2); unput('2'); addStartCondition(VAR1); return CHAR_CONST;}
-<HEREDOC,STR>\$\{{ID} {writeCharToUnion(lexem); strcpy(lexem, yytext+2); unput('2'); addStartCondition(VAR1); return CHAR_CONST;}
-<VAR1>. {unput(yytext[0]); changeStartCondition(VAR2); return '.';}
-<VAR2>. {writeIdToUnion(lexem); if (yytext[0] == '1') changeStartCondition(VAR_BEGIN); else changeStartCondition(COMPLEX_VAR_BEGIN); return VARNAME;}
-<COMPLEX_VAR>\} {returnStartCondition();}
+<HEREDOC,STR>\${ID} {writeCharToUnion(lexem); strcpy(lexem, yytext+1); unput('1'); addStartCondition(VAR_IN_STR); return CHAR_CONST;}
+<VAR_IN_STR>. {writeIdToUnion(lexem); returnStartCondition(); return VARNAME_IN_STR;}
 
-<COMPLEX_VAR>"->" {addStartCondition(VAR_ARROW); return ARROW;}
-<VAR_ARROW>{ID} {writeIdToUnion(yytext); returnStartCondition(); return ID;}
-
-<COMPLEX_VAR,VAR>\[ {addStartCondition(VAR_INDEX_BEGIN); return '[';}
-<VAR_INDEX_BEGIN>{ID} {writeIdToUnion(yytext); changeStartCondition(VAR_INDEX); return ID;}
-<VAR_INDEX_BEGIN>{DEC_NUM} {writeIntToUnion(yytext, "%d"); changeStartCondition(VAR_INDEX); return INT_CONST;}
-<VAR_INDEX>\] {returnStartCondition(); return ']';}
-<VAR_INDEX>"+" {addStartCondition(VAR_INDEX_EXPR); return '+';}
-<VAR_INDEX>"-" {addStartCondition(VAR_INDEX_EXPR); return '-';}
-<VAR_INDEX>"*" {addStartCondition(VAR_INDEX_EXPR); return '*';}
-<VAR_INDEX>"/" {addStartCondition(VAR_INDEX_EXPR); return '/';}
-<VAR_INDEX>"%" {addStartCondition(VAR_INDEX_EXPR); return '%';}
-<VAR_INDEX>"." {addStartCondition(VAR_INDEX_EXPR); return '.';}
-<VAR_INDEX_EXPR>{ID} {writeIdToUnion(yytext); returnStartCondition(); return ID;}
-<VAR_INDEX_EXPR>{DEC_NUM} {writeIntToUnion(yytext, "%d"); returnStartCondition(); return INT_CONST;}
-
-<VAR>. {unput(yytext[0]); returnStartCondition();}
-
-<HEREDOC,STR,NOWDOC,STR_SINGLE_QUOTATION>. strcat(lexem, yytext);
-<HEREDOC,STR,NOWDOC,STR_SINGLE_QUOTATION>\n strcat(lexem, yytext);
-<HEREDOC,STR,STR_SINGLE_QUOTATION>\\\\ strcat(lexem, "\\");
-<STR_SINGLE_QUOTATION>\\\' strcat(lexem, "'");
+<HEREDOC,STR,NOWDOC,STR_CONST>. strcat(lexem, yytext);
+<HEREDOC,STR,NOWDOC,STR_CONST>\n strcat(lexem, yytext);
+<HEREDOC,STR,STR_CONST>\\\\ strcat(lexem, "\\");
+<STR_CONST>\\\' strcat(lexem, "'");
 <STR>\\\" strcat(lexem, "\"");
 <HEREDOC,STR>\\n strcat(lexem, "\n");
 <HEREDOC,STR>\\r strcat(lexem, "\r");

@@ -1,7 +1,7 @@
 echo Bison runing...
 rem bison_input.yacc_tab.h
 rem bison_input.yacc_tab.c
-bison.exe -d bison_input.yacc
+bison.exe -d --verbose bison_input.yacc
 rem phpLexAnalyzer\phpLexAnalyzer\bison_input.yacc_tab.c
 rem phpLexAnalyzer\phpLexAnalyzer\bison_input.yacc_tab.h
 rem phpLexAnalyzer\phpLexAnalyzer\bison_input_structs.c
