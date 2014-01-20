@@ -1,2 +1,2 @@
-flex.exe -l lexems.c
+flex.exe -l lexems.l
 pause

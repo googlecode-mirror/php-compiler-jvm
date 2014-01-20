@@ -1,3 +1,3 @@
 echo Bison runing...
-bison.exe -d --verbose grammar.c -o parser.c
+bison.exe -d --verbose grammar.y -o parser.c
 pause

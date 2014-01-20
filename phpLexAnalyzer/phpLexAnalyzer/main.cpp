@@ -11,6 +11,7 @@
 extern int yyparse(void);
 
 extern "C" FILE* yyin;
+extern "C" struct ProgramStruct* root;
 
 int main(int argc,char* argv[])
 {
@@ -23,8 +24,13 @@ int main(int argc,char* argv[])
 		yyin=fopen(argv[1],"r");
 		if (yyin == NULL)
 			printf("error\n");
+		else
+		{
+			yyparse();
+			/*if (root->info->first->type == t_html)
+				printf(root->info->first->html);*/
+		}
 	}
-	yyparse();
 
     //tree_print();
 

@@ -56,7 +56,7 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 
 . strcat(html, yytext);
 \n strcat(html, yytext);
-<INITIAL><<EOF>> {if (strlen(html) != 0) {writeHtmlToUnion(html);} return HTML;}
+<INITIAL><<EOF>> {if (strlen(html) != 0) {writeHtmlToUnion(html); return HTML;} yyterminate();}
 
 <PHP>"<<<"{ID}|(\"{ID}\")$ {getDocName(); strcpy(lexem, ""); addStartCondition(HEREDOC);}
 <PHP>"<<<"\'{ID}\'$ {getDocName(); strcpy(lexem, ""); addStartCondition(NOWDOC);}
