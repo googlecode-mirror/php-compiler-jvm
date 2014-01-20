@@ -201,6 +201,7 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 	*=	MULTAS
 	/=	DIVAS
 	%=	MODAS
+	.=	DOTAS
 */
 
 %%
@@ -259,6 +260,7 @@ expr:
 |	expr '*' expr								{$$ = createExpr($1, $3, t_mult);}
 |	expr '/' expr								{$$ = createExpr($1, $3, t_div);}
 |	expr '%' expr								{$$ = createExpr($1, $3, t_mod);}
+|	expr '.' expr								{$$ = createExpr($1, $3, t_dot);}
 |	'+' expr %prec UPLUS						{$$ = createUExpr($2, t_uplus);}
 |	'-' expr %prec UMINUS						{$$ = createUExpr($2, t_uminus);}
 |	expr '=' expr								{$$ = createExpr($1, $3, t_assign);}
@@ -267,6 +269,7 @@ expr:
 |	expr MULTAS expr							{$$ = createExpr($1, $3, t_mulas);}
 |	expr DIVAS expr								{$$ = createExpr($1, $3, t_divas);}
 |	expr MODAS expr								{$$ = createExpr($1, $3, t_modas);}
+|	expr DOTAS expr								{$$ = createExpr($1, $3, t_dotas);}
 |	expr INC									{$$ = createUExpr($1, t_post_inc);}
 |	expr DEC									{$$ = createUExpr($1, t_post_dec);}
 |	INC expr									{$$ = createUExpr($2, t_pre_inc);}

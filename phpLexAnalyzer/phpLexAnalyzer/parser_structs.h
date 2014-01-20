@@ -85,6 +85,7 @@ enum ExprType								//	тип выражениия
 	t_mult,									//	*
 	t_div,									//	/
 	t_mod,									//	%
+	t_dot,									//	.
 	t_uplus,								//	+ унарный
 	t_uminus,								//	- унарный
 	
@@ -94,6 +95,7 @@ enum ExprType								//	тип выражениия
 	t_mulas,								//	*-
 	t_divas,								//	/=
 	t_modas,								//	%=
+	t_dotas,								//	.=
 	
 	t_post_inc,								//	++ постфиксный
 	t_post_dec,								//	-- постфиксный

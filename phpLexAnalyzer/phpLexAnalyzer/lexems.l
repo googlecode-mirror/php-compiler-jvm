@@ -145,7 +145,8 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 
 <PHP>=> {return SETVALUE;}
 <PHP>-> {return ARROW;}
-<PHP>\. {return (unsigned char)'.';}
+<PHP>"." {return (unsigned char)'.';}
+<PHP>".=" {return DOTAS;}
 <PHP>: {return (unsigned char)':';}
 <PHP>:: {return SCOPEOP;}
 
