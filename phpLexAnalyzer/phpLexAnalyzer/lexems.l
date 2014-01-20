@@ -118,7 +118,7 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 
 <PHP>new {return NEW;}
 <PHP>class {return CLASS;}
-<PHP>this {return THIS;}
+<PHP>this {return TTHIS;}
 <PHP>extends {return EXTENDS;}
 <PHP>var {return PUBLIC;}
 <PHP>public {return PUBLIC;}

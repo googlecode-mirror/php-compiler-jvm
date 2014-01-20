@@ -166,7 +166,7 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 %token ARRAY
 %token IF ELSE ELSEIF SWITCH CASE BREAK DEFAULT
 %token FOR FOREACH AS DO WHILE
-%token NEW CLASS THIS EXTENDS PUBLIC PRIVATE PROTECTED STATIC PARENT	//TO DO реализовать NEW, THIS, STATIC, PARENT (':' мб)
+%token NEW CLASS TTHIS EXTENDS PUBLIC PRIVATE PROTECTED STATIC PARENT	//TO DO реализовать NEW, TTHIS, STATIC, PARENT (':' мб)
 %token FUNCTION RETURN
 %token ECHO
 %token <idUnionType>ID
@@ -174,12 +174,12 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 %token <idUnionType>VARNAME_IN_STR
 %token SETVALUE ARROW SCOPEOP											//TO DO реализовать SCOPEOP
 %token COR CAND POR PAND
-%token PLUSAS MINUSAS MULTAS DIVAS MODAS 								//TO DO добавить оператор точку и точку_равно
+%token PLUSAS MINUSAS MULTAS DIVAS MODAS DOTAS							//TO DO добавить оператор точку и точку_равно
 %token INC DEC
 %token EQ NEQ GEQ LEQ TEQ TNEQ
 
 %left ','
-%right '=' PLUSAS MINUSAS MULTAS DIVAS MODAS
+%right '=' PLUSAS MINUSAS MULTAS DIVAS MODAS DOTAS
 %left COR CAND POR PAND
 %nonassoc EQ NEQ TEQ TNEQ
 %nonassoc '>' '<' GEQ LEQ
