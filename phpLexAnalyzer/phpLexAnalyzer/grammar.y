@@ -4,7 +4,7 @@
 #include <malloc.h>
 
 void yyerror(char const *s);
-extern "C" int yylex(void);
+extern int yylex(void);
 
 struct ProgramStruct* root;
 
