@@ -276,7 +276,7 @@ expr:
 |	DEC expr									{$$ = createUExpr($2, t_pre_dec);}
 |	variable									{$$ = createVarExpr($1);}
 |	string										{$$ = createStrExpr($1);}
-|	ARRAY '(' array ')'							{$$ = createArrayExpr($3);}
+|	array										{$$ = createArrayExpr($1);}
 |	ID '(' expr_list ')'						{$$ = createFuncCallExpr($1, $3);}
 ;
 
@@ -346,8 +346,9 @@ array_ne:
 ;
 
 array:
-	/*empty*/									{$$ = 0;}
-|	array_ne									{$$ = $1;}
+	ARRAY '(' /*empty*/ ')'						{$$ = 0;}
+|	ARRAY '(' array_ne ')'						{$$ = $3;}
+|	ARRAY '(' array_ne ',' ')'					{$$ = $3;}
 ;
 
 /* =============== IF/ELSEIF/CASE/CASE_LIST/SWITCH =============== */
@@ -373,13 +374,13 @@ case_stmt_list:
 ;
 
 switch_stmt:
-	SWITCH '(' expr ')' '{' case_stmt_list '}'						{$$ = createSwitchStmt($3, $6);}
-|	SWITCH '(' expr ')' '{' case_stmt_list DEFAULT ':' stmt_list	{$$ = createSwitchStmtWithDefault($3, $6, $9);}
+	SWITCH '(' expr ')' '{' case_stmt_list '}'							{$$ = createSwitchStmt($3, $6);}
+|	SWITCH '(' expr ')' '{' case_stmt_list DEFAULT ':' stmt_list '}'	{$$ = createSwitchStmtWithDefault($3, $6, $9);}
 ;
 
 /* =============== FOR/DO/WHILE/FOREACH =============== */
 for_stmt:
-	FOR '(' expr_e ';' expr_e ';' expr_e ')' stmt					{$$ = createForStmt($3, $5, $7, $9);}
+	FOR '(' expr_e ';' expr_e ';' expr_e ')' stmt						{$$ = createForStmt($3, $5, $7, $9);}
 ;
 
 do_while_stmt:
@@ -391,8 +392,8 @@ while_stmt:
 ;
 
 foreach_stmt:
-	FOREACH '(' expr AS VARNAME ')' stmt							{$$ = createForeachStmt($3, $5, $7);}
-|	FOREACH '(' expr AS VARNAME SETVALUE VARNAME ')' stmt			{$$ = createForeachStmtWithKey($3, $5, $7, $9);}
+	FOREACH '(' expr AS VARNAME ')' stmt								{$$ = createForeachStmt($3, $5, $7);}
+|	FOREACH '(' expr AS VARNAME SETVALUE VARNAME ')' stmt				{$$ = createForeachStmtWithKey($3, $5, $7, $9);}
 ;
 
 /* =============== STMT =============== */
@@ -405,7 +406,7 @@ stmt:
 |	while_stmt									{$$ = createStmtWhile($1);}
 |	foreach_stmt								{$$ = createStmtForeach($1);}
 |	function_declaration						{$$ = createStmtFuncDef($1);}
-|	ECHO expr									{$$ = createStmtEcho($2);}
+|	ECHO expr ';'								{$$ = createStmtEcho($2);}
 |	BREAK ';'									{$$ = createStmtBreak();}
 |	RETURN expr_e ';'							{$$ = createStmtReturn($2);}
 |	'{' stmt_list '}'							{$$ = createStmtStmtlist($2);}
@@ -424,7 +425,7 @@ stmt_list:
 
 /* =============== FUNCTION =============== */
 function_declaration:
-	FUNCTION ID '(' var_list ')' '{' stmt_list '}'					{$$ = createFuncDef($2, $4, $7);}
+	FUNCTION ID '(' var_list ')' '{' stmt_list '}'						{$$ = createFuncDef($2, $4, $7);}
 ;
 
 /* =============== CLASS =============== */
