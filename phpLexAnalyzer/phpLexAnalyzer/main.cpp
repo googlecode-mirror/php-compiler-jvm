@@ -1,16 +1,18 @@
+#include <locale.h>
 #include <conio.h>
 #include <stdio.h>
 #include <string.h>
-#include <locale.h>
-//#include "parser_structs.h"
-//#include "parser.h"
+
+extern "C"  {
+#include "parser.h"
 #include "parser.c"
+//#include "parser_structs.h"
+	}
 //#include "lexer.c"
 #include <windows.h>
 
-extern int yyparse(void);
-
 extern "C" FILE* yyin;
+extern "C" int yyparse();
 extern "C" struct ProgramStruct* root;
 
 int main(int argc,char* argv[])

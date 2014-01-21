@@ -168,7 +168,7 @@ struct ProgramStruct* createProgram(struct ProgramStmtListStruct* new_info);
 %token FOR FOREACH AS DO WHILE
 %token NEW CLASS TTHIS EXTENDS PUBLIC PRIVATE PROTECTED STATIC PARENT	//TO DO реализовать NEW, TTHIS, STATIC, PARENT (':' мб)
 %token FUNCTION RETURN
-%token ECHO
+%token PRINT
 %token <idUnionType>ID
 %token <idUnionType>VARNAME
 %token <idUnionType>VARNAME_IN_STR
@@ -406,7 +406,7 @@ stmt:
 |	while_stmt									{$$ = createStmtWhile($1);}
 |	foreach_stmt								{$$ = createStmtForeach($1);}
 |	function_declaration						{$$ = createStmtFuncDef($1);}
-|	ECHO expr ';'								{$$ = createStmtEcho($2);}
+|	PRINT expr ';'								{$$ = createStmtEcho($2);}
 |	BREAK ';'									{$$ = createStmtBreak();}
 |	RETURN expr_e ';'							{$$ = createStmtReturn($2);}
 |	'{' stmt_list '}'							{$$ = createStmtStmtlist($2);}

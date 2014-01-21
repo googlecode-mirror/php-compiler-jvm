@@ -3,7 +3,7 @@
     #include <string.h>
 	#include "parser.h"
 	
-	extern YYSTYPE yylval;
+	extern union YYSTYPE yylval;
 
 	int start_condition[64];
 	int condition_num = 0;
@@ -130,8 +130,8 @@ ID {FIRST_SYMBOL}{SYMBOL}*
 <PHP>function {return FUNCTION;}
 <PHP>return {return RETURN;}
 
-<PHP>echo {return ECHO;}
-<PHP>print {return ECHO;}
+<PHP>echo {return PRINT;}
+<PHP>print {return PRINT;}
 
 <PHP>\${ID} {writeIdToUnion(yytext); return VARNAME;}
 <PHP>{ID} {writeIdToUnion(yytext); return ID;}
